@@ -1,0 +1,26 @@
+syntax="proto3";
+package data;
+
+import "google/protobuf/timestamp.proto";
+
+// Public event 
+message PEvent {
+    string organizer = 1;
+    string title = 2;
+    string content = 3;
+    PEventStatus status = 4;
+
+    repeated string tags = 6;
+    google.protobuf.Timestamp created = 7;
+}
+
+
+enum PEventStatus {
+    Pending = 0;
+    Progress = 1;
+    Done = 2;
+    Cancelled = 3;
+    Created = 4;
+}
+
+
