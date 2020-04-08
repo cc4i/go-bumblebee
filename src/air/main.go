@@ -3,11 +3,12 @@ package main
 import (
 	"air/aqi"
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 )
 
-func main() {
 
+func router() *gin.Engine {
 	r := gin.Default()
 
 	r.GET("/ping", func(c *gin.Context) {
@@ -17,5 +18,9 @@ func main() {
 		aqi.AirOfCity(c)
 	})
 
-	r.Run("0.0.0.0:9011")
+	return r
+}
+
+func main() {
+	log.Fatal(router().Run("0.0.0.0:9011"))
 }

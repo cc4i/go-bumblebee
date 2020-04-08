@@ -2,9 +2,7 @@ package mocks
 
 import "net/http"
 
-type MockClient struct {
-	//DoFunc func(req *http.Request) (*http.Response, error)
-}
+type MockClient struct {}
 
 var (
 	// GetDoFunc fetches the mock client's `Do` func

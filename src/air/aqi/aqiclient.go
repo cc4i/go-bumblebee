@@ -13,6 +13,15 @@ import (
 	"strings"
 )
 
+
+type HttpClient interface {
+	Do(req *http.Request) (*http.Response, error)
+}
+
+var (
+	Client HttpClient
+)
+
 type ApiError struct {
 	Status string `json:"status"`
 	Data string `json:"data"`
@@ -85,6 +94,16 @@ type OriginTime struct {
 	V int `json:"v"`
 }
 
+
+func init() {
+	config := &tls.Config{
+		InsecureSkipVerify: true,
+	}
+	tr := &http.Transport{TLSClientConfig: config}
+	Client = &http.Client{Transport: tr}
+
+}
+
 func SplitName(name string) (city string, citycn string) {
 	ns := strings.Split(name, "(")
 	if len(ns) !=2 {
@@ -134,9 +153,11 @@ func Copy2AirQuality(src OriginAirQuality) AirQuality {
 func AirOfCity(c *gin.Context) {
 	city := c.Param("city")
 
+	// TODO: Making more secure
 	token := "b0e78ca32d058a9170b6907c5214c0e946534cc9"
 	host := "https://api.waqi.info"
 	url := host + "/feed/" + city + "/?token=" + token
+	// ---
 
 	body, err := HttpGet(url)
 	if err !=nil {
@@ -177,13 +198,8 @@ func convertAir(content []byte) AirQuality {
 
 func HttpGet(url string) ([]byte, error) {
 
-	config := &tls.Config{
-		InsecureSkipVerify: true,
-	}
-	tr := &http.Transport{TLSClientConfig: config}
-	client := &http.Client{Transport: tr}
 	req, err := http.NewRequest(http.MethodGet, url, nil)
-	resp, err := client.Do(req)
+	resp, err := Client.Do(req)
 	if err !=nil {
 		log.Printf("API call was failed from %s with Err: %s. \n", url, err)
 		return nil, err

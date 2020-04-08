@@ -1,6 +1,7 @@
 package main
 
 import (
+	"gate/graphqlsvr"
 	"gate/httpsvr"
 	"gate/tcpsvr"
 	"gate/websocketsvr"
@@ -18,7 +19,9 @@ func gRpcServer(endPoint string) {
 
 }
 
-func graphQLServer(endPoint string) {}
+func graphQLServer(endPoint string) {
+	log.Fatal(graphqlsvr.Router().Run(endPoint))
+}
 
 func websocketServer(endPoint string) {
 
@@ -39,6 +42,9 @@ func init() {
 func main() {
 
 	go httpServer("0.0.0.0:9010")
+
+	go graphQLServer("0.0.0.0:9030")
 	go websocketServer("0.0.0.0:9040")
 	tcpServer("0.0.0.0:9050")
+
 }
