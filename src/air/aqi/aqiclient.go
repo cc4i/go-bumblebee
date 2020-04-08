@@ -6,8 +6,8 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -163,14 +163,18 @@ func AirOfCity(c *gin.Context) {
 	if err !=nil {
 		log.Println(err)
 	}
-
-	c.JSON(http.StatusOK, convertAir(body))
+	air, err := convertAir(body)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+	} else {
+		c.JSON(http.StatusOK, air)
+	}
 
 }
 
 
 
-func convertAir(content []byte) AirQuality {
+func convertAir(content []byte) (AirQuality, error) {
 	var originAir OriginAirQuality
 	var newAir AirQuality
 	var apiError ApiError
@@ -179,20 +183,21 @@ func convertAir(content []byte) AirQuality {
 	err := json.Unmarshal(content, &originAir)
 	if err!=nil {
 		log.Println(err)
+		return newAir, err
 	}
 	if originAir.Status=="error" {
-		err2 := json.Unmarshal(content, &apiError)
-		if err2!=nil {
-			log.Println(err2)
+		err = json.Unmarshal(content, &apiError)
+		if err!=nil {
+			log.Println(err)
 		}
 		log.Printf("Convert data was failed due to <%s>. ",  apiError.Data)
-		return newAir
+		return newAir, err
 
 	}
 	newAir = Copy2AirQuality(originAir)
 
 
-	return newAir
+	return newAir, nil
 
 }
 
@@ -209,6 +214,7 @@ func HttpGet(url string) ([]byte, error) {
 		log.Printf("Read buffer failed.\n")
 		return nil, err
 	}
+	log.Println("origin response : ", string(body))
 
 	return body, nil
 }
