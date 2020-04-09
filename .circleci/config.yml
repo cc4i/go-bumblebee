@@ -4,6 +4,26 @@
 version: 2
 jobs:
   build-gate:
+    docker:
+      # specify the version
+      - image: circleci/golang:1.14.1
+
+    working_directory: /go/src/github.com/cc4i/go-bumblebee
+    steps:
+      - checkout
+
+      # specify any bash command here prefixed with `run: `
+      - run: 
+          name: building & test
+          command: |
+            which go
+            echo $PATH
+            cd /go/src/github.com/cc4i/go-bumblebee/src/gate
+            ls -F
+            go get -v -d
+            go test -v -cover ./...
+
+  build-gate-image:
     machine: true
     steps:
       - checkout
@@ -16,6 +36,7 @@ jobs:
             echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin
             docker build -t go-bumblebee/gate:$CIRCLE_BRANCH .
             docker push go-bumblebee/gate:$CIRCLE_BRANCH .
+
   build-air:
     docker:
       # specify the version
@@ -41,5 +62,8 @@ workflows:
   build-workflow:
     jobs:
       - build-gate
+      - build-gate-image:
+          requires:
+            - build-gate
       - build-air
 
