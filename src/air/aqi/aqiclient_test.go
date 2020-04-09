@@ -34,7 +34,7 @@ func TestAirOfCity(t *testing.T) {
 		output   string
 		httpCode int
 	}{
-		{"Test normal respone with 200",
+		{"Test normal response with 200",
 			"127.0.0.1:1234",
 			"/air/beijing",
 			`{"status":"ok","data":{"aqi":63,"idx":1451,"attributions":[{"url":"http://www.bjmemc.com.cn/","name":"Beijing Environmental Protection Monitoring Center (北京市环境保护监测中心)"},{"url":"https://china.usembassy-china.org.cn/embassy-consulates/beijing/air-quality-monitor/","name":"U.S Embassy Beijing Air Quality Monitor (美国驻北京大使馆空气质量监测)"},{"url":"https://waqi.info/","name":"World Air Quality Index Project"}],"city":{"geo":[39.954592,116.468117],"name":"Beijing (北京)","url":"https://aqicn.org/city/beijing"},"dominentpol":"pm25","iaqi":{"co":{"v":4.6},"h":{"v":19},"no2":{"v":5.5},"o3":{"v":37.8},"p":{"v":1020},"pm10":{"v":56},"pm25":{"v":63},"so2":{"v":3.6},"t":{"v":15},"w":{"v":3.6}},"time":{"s":"2020-04-08 17:00:00","tz":"+08:00","v":1586365200},"debug":{"sync":"2020-04-08T18:28:14+09:00"}}}`,
