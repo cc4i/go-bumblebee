@@ -9,12 +9,10 @@ jobs:
       - image: circleci/golang:1.14.1
 
     working_directory: /go/src/github.com/cc4i/go-bumblebee
+    machine: true
     steps:
       - checkout
 
-      - setup_remote_docker:
-          docker_layer_caching: true
-          
       # specify any bash command here prefixed with `run: `
       - run: 
           name: building & test
