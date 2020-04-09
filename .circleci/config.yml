@@ -66,7 +66,7 @@ jobs:
       - run: 
           name: building image & push
           command: |
-            cd /home/circleci/project/src/gate
+            cd /home/circleci/project/src/air
             echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin
             docker build -t $DOCKER_USER/go-bumblebee-air:$CIRCLE_BRANCH .
             docker push $DOCKER_USER/go-bumblebee-air:$CIRCLE_BRANCH
