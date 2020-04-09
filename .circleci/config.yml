@@ -32,7 +32,7 @@ jobs:
       - run: 
           name: building image & push
           command: |
-            cd /go/src/github.com/cc4i/go-bumblebee/src/gate
+            cd /home/circleci/project/src/gate
             echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin
             docker build -t go-bumblebee/gate:$CIRCLE_BRANCH .
             docker push go-bumblebee/gate:$CIRCLE_BRANCH .
