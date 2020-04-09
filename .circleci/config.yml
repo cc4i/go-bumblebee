@@ -34,8 +34,8 @@ jobs:
           command: |
             cd /home/circleci/project/src/gate
             echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin
-            docker build -t go-bumblebee/gate:$CIRCLE_BRANCH .
-            docker push go-bumblebee/gate:$CIRCLE_BRANCH
+            docker build -t $DOCKER_USER/go-bumblebee-gate:$CIRCLE_BRANCH .
+            docker push $DOCKER_USER/go-bumblebee-gate:$CIRCLE_BRANCH
 
   build-air:
     docker:
@@ -56,6 +56,20 @@ jobs:
             ls -F
             go get -v -d
             go test -v -cover ./...
+
+  build-air-image:
+    machine: true
+    steps:
+      - checkout
+
+      # specify any bash command here prefixed with `run: `
+      - run: 
+          name: building image & push
+          command: |
+            cd /home/circleci/project/src/gate
+            echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin
+            docker build -t $DOCKER_USER/go-bumblebee-air:$CIRCLE_BRANCH .
+            docker push $DOCKER_USER/go-bumblebee-air:$CIRCLE_BRANCH
       
 workflows:
   version: 2
@@ -66,4 +80,7 @@ workflows:
           requires:
             - build-gate
       - build-air
+      - build-air-image:
+          requires:
+            - build-air
 
