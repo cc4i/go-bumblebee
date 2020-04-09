@@ -39,19 +39,18 @@ func ConnectionHandler(con net.Conn) {
 		}
 
 		switch str {
-			case "help\r\n":
-				con.Write([]byte("An echo service with delimit newline. \r\n'help' - simple help.\r\n 'exit' - close connection.\r\n"))
-				break
-			case "exit\r\n":
-				con.Close()
-				break
-			default:
-				_, err = con.Write([]byte(str))
-				if err != nil {
-					log.Println(err)
-				}
+		case "help\r\n":
+			con.Write([]byte("An echo service with delimit newline. \r\n'help' - simple help.\r\n 'exit' - close connection.\r\n"))
+			break
+		case "exit\r\n":
+			con.Close()
+			break
+		default:
+			_, err = con.Write([]byte(str))
+			if err != nil {
+				log.Println(err)
+			}
 		}
-
 
 	}
 

@@ -9,30 +9,31 @@ import (
 	"os"
 )
 
-
-
 func httpServer(endPoint string) {
+	log.Printf("Serving on %s for Http 1/2 Service ...", endPoint)
 	log.Fatal(httpsvr.Router().Run(endPoint))
 }
 
 func gRpcServer(endPoint string) {
+	log.Printf("Serving on %s for gRPC Service ...", endPoint)
 
 }
 
 func graphQLServer(endPoint string) {
+	log.Printf("Serving on %s for GraphQL Service ...", endPoint)
 	log.Fatal(graphqlsvr.Router().Run(endPoint))
 }
 
 func websocketServer(endPoint string) {
-
+	log.Printf("Serving on %s for WebSocket Service ...", endPoint)
 	log.Fatal(websocketsvr.Router().Run(endPoint))
 
 }
 
 func tcpServer(endPoint string) {
+	log.Printf("Serving on %s for raw TCP Service ...", endPoint)
 	log.Fatal(tcpsvr.RunServer(endPoint))
 }
-
 
 func init() {
 	log.SetOutput(os.Stdout)

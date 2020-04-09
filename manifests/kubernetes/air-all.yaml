@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: airservice
+spec:
+  selector:
+    matchLabels:
+      app: airservice 
+  template:
+    metadata:
+      labels: 
+        app: airservice 
+    spec:
+      terminationGracePeriodSeconds: 5
+      containers:
+      - name: gate-go-bumblebee
+        image:  go-bumblebee/air
+        ports:
+          - name: http
+            containerPort: 9011
+        resources:
+          requests: 
+            cpu: 100m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: airservice
+spec: 
+  type: ClusterIP
+  selector:
+    app: airservice
+  ports:
+  - name: http
+    port: 9011
+    targetPort: 9011
+
+

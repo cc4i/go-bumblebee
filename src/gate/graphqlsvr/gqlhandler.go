@@ -1,6 +1,5 @@
 package graphqlsvr
 
-
 import (
 	"gate/graphqlsvr/graph"
 	"gate/graphqlsvr/graph/generated"
