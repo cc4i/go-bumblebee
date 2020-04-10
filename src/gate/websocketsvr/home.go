@@ -39,7 +39,7 @@ window.addEventListener("load", function(evt) {
             ws = null;
         }
         ws.onmessage = function(evt) {
-            print("RESPONSE: " + evt.data);
+            print("RESPONSE: " + evt.data + Date().toString());
         }
         ws.onerror = function(evt) {
             print("ERROR: " + evt.data);
@@ -50,7 +50,7 @@ window.addEventListener("load", function(evt) {
         if (!ws) {
             return false;
         }
-        print("SEND: " + input.value);
+        print("SEND: " + input.value + Date().toString());
         ws.send(input.value);
         return false;
     };
