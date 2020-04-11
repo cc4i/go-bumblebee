@@ -10,6 +10,44 @@ It's sample application with Microservices style on Kubernetes, developers can l
 
 ## Quick Start
 
+### High level architecture 
+
+![ss](./docs/arch0.jpg)
+
+### Deployment
+
+```bash
+$ cd manifests/kubernetes
+$ kubeclt -f ./gate-all.yaml
+$ kubeclt -f ./air-all.yaml
+$ kubeclt -f ./spy-all.yaml
+
+# Checking Go-Bumblebee 
+# --- HTTP ---
+$ HOSTNAME = `kubectl get svc/gateservice-external -o=jsonpath="{.status.loadBalancer.ingress[0].hostname}"`
+$ echo $HOSTNAME
+$ curl http://$HOSTNAME:9010/ping
+$ curl http://$HOSTNAME:9010/metrics
+$ curl http://$HOSTNAME:9010/air/beijing
+
+# --- gRPC ---
+
+# --- GraphQL ---
+http://$HOSTNAME:9030/
+
+# --- WebSocket ---
+http://$HOSTNAME:9040/
+# Simple echo service
+http://$HOSTNAME:9040/echo
+# Quest Kubernetes resources
+http://$HOSTNAME:9030/spy
+
+# --- TCP ---
+telnet $HOSTNAME 9050
+
+# --- UDP ---
+```
+
 ## Tutorial
 
 ### 1. Go-Bumblebee through CI/CD pipleline

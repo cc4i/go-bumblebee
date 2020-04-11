@@ -1,6 +1,10 @@
 package k8s
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"net/http"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+)
 
 func Router() *gin.Engine {
 	r := gin.Default()
@@ -14,5 +18,11 @@ func Router() *gin.Engine {
 		web := WebContext{}
 		web.Handler(c.FullPath(), c)
 	})
+
+	r.GET("/metrics", func(c *gin.Context) {
+		promhttp.Handler().ServeHTTP(c.Writer, c.Request)
+
+	})
+
 	return r
 }
