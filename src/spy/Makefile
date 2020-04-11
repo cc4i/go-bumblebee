@@ -8,7 +8,13 @@ DOCKER_USER =
 all:	manager
 
 test:	fmt	vet
-	touch ${HOME}/.kube/config
+
+	@if [ -f ${HOME}/.kube/config ]; then \
+		echo "";\
+	else\
+		mkdir ${HOME}/.kube;\
+		touch ${HOME}/.kube/config;\
+	fi
 	go test ./... -v -cover
 
 
