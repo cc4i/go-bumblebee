@@ -5,25 +5,18 @@ IMG ?= gate:latest
 DOCKER_PASS =
 DOCKER_USER =
 
-all: manager
+all:	manager
 
-test: fmt vet
-	if [ -f ${HOME}/.kube/config ]
-	then
-  		go test ./... -v -cover
-  	else
-  		echo " kubeconfig wasn't exist & making fake config. "
-  		mkdir ${HOME}/.kube
-  		touch ${HOME}/.kube/config
-  		go test ./... -v -cover
-  	fi
+test:	fmt	vet
+	touch ${HOME}/.kube/config
+	go test ./... -v -cover
 
 
 # Build manager binary
-manager: fmt vet
+manager:	fmt	vet
 	go build -o spy main.go
 
-run: fmt vet
+run:	fmt	vet
 	go run ./main.go
 
 # Run go fmt against code
