@@ -4,12 +4,20 @@ IMG ?= gate:latest
 # Docker Hub username / password
 DOCKER_PASS =
 DOCKER_USER =
-IN_CLUSTER_CONFIG = false
 
 all: manager
 
 test: fmt vet
-	go test ./... -v -cover
+	if [ -f ${HOME}/.kube/config ]
+	then
+  		go test ./... -v -cover
+  	else
+  		echo " kubeconfig wasn't exist & making fake config. "
+  		mkdir ${HOME}/.kube
+  		touch ${HOME}/.kube/config
+  		go test ./... -v -cover
+  	fi
+
 
 # Build manager binary
 manager: fmt vet
@@ -32,6 +40,6 @@ docker-build: test
 
 # Push the docker image
 docker-push:
-	echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin
+	echo ${DOCKER_PASS} | docker login --username ${DOCKER_USER} --password-stdin
 	docker push ${IMG}
 
