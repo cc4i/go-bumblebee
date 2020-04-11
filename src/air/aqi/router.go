@@ -3,6 +3,7 @@ package aqi
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func Router() *gin.Engine {
@@ -13,6 +14,11 @@ func Router() *gin.Engine {
 	})
 	r.GET("/air/:city", func(c *gin.Context) {
 		AirOfCity(c)
+	})
+
+	r.GET("/metrics", func(c *gin.Context) {
+		promhttp.Handler().ServeHTTP(c.Writer, c.Request)
+
 	})
 
 	return r

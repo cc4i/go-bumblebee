@@ -16,8 +16,8 @@ func Router() *gin.Engine {
 	})
 
 	//Realtime service: query air info with realtime update/push.
-	r.GET("/realtime", func(c *gin.Context) {
-		Realtime(c)
+	r.GET("/spy", func(c *gin.Context) {
+		Spy(c)
 	})
 	return r
 }

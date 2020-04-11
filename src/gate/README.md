@@ -6,6 +6,7 @@ Probably will add more from time to time. As universe interface all access will 
 ## HTTP
 - /ping : Health checking with 'pong'
 - /air/{city} : Retrieve air quality for external site.
+- /metrics : Instrumenting for Prometheus scrap
 
 ## gRPC
 
@@ -14,7 +15,8 @@ Probably will add more from time to time. As universe interface all access will 
 
 ## WebSocket
 - / : Embedding page for WebSocket demo.
-- ws://${host}/echo : Websocket based echo service.
+- ws://${host}/echo : WebSocket based echo service.
+- ws://${host}/spy : WebSocket for realtime Kubernetes information.
   
 ## TCP
 - : Telnet to listen port and experience TCP based echo service (delimit '\n').

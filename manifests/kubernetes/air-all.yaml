@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: airservice
 spec:
+  replicas: 3
   selector:
     matchLabels:
       app: airservice 

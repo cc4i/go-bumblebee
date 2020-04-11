@@ -3,7 +3,7 @@ package websocketsvr
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 )
 
