@@ -2,7 +2,6 @@ package k8s
 
 import (
 	"github.com/gin-gonic/gin"
-	"net/http"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
