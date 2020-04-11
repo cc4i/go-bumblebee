@@ -113,10 +113,12 @@ workflows:
       - build-gate-image:
           requires:
             - build-gate
+
       - build-air
       - build-air-image:
           requires:
             - build-air
+            
       - build-spy
       - build-spy-image:
           requires:

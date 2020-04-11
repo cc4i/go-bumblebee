@@ -42,9 +42,9 @@ func init() {
 
 func main() {
 
-	go httpServer("0.0.0.0:9010") //http
-	go graphQLServer("0.0.0.0:9030")	//gql
-	go websocketServer("0.0.0.0:9040")	//ws
-	tcpServer("0.0.0.0:9050")	//tcp
+	go httpServer("0.0.0.0:9010")      //http
+	go graphQLServer("0.0.0.0:9030")   //gql
+	go websocketServer("0.0.0.0:9040") //ws
+	tcpServer("0.0.0.0:9050")          //tcp
 
 }
