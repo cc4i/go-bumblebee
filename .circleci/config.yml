@@ -92,7 +92,6 @@ jobs:
 
   build-spy-image:
     machine: true
-    working_directory: /go/src/github.com/cc4i/go-bumblebee
     steps:
       - checkout
 
@@ -100,7 +99,7 @@ jobs:
       - run: 
           name: building image & push
           command: |
-            cd /go/src/github.com/cc4i/go-bumblebee/src/spy
+            cd /home/circleci/project/src/spy
             echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin
             docker build -t $DOCKER_USER/go-bumblebee-spy:$CIRCLE_BRANCH .
             docker push $DOCKER_USER/go-bumblebee-spy:$CIRCLE_BRANCH
@@ -118,7 +117,7 @@ workflows:
       - build-air-image:
           requires:
             - build-air
-            
+
       - build-spy
       - build-spy-image:
           requires:
