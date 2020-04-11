@@ -16,6 +16,9 @@ spec:
       containers:
       - name: gate-go-bumblebee
         image:  herochinese/go-bumblebee-spy:master
+        env:
+          - name: IN_CLUSTER_CONFIG
+            value: true
         ports:
           - name: http
             containerPort: 9041

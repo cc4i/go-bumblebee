@@ -25,12 +25,15 @@ var upGrader = websocket.Upgrader{
 
 var k8s *K8sContext
 
-func init() {
-	clientset, err := kubernetes.NewForConfig(getConfig())
-	if err != nil {
-		log.Error(err.Error())
+func initK8s() {
+	if k8s == nil {
+		clientset, err := kubernetes.NewForConfig(getConfig())
+		if err != nil {
+			log.Error(err.Error())
+		}
+		k8s = &K8sContext{Clientset: clientset}
 	}
-	k8s = &K8sContext{Clientset: clientset}
+
 }
 
 func (web *WebContext) Handler(path string, c *gin.Context) {
@@ -72,6 +75,7 @@ func Ping(ws *websocket.Conn) {
 }
 
 func Spy(ws *websocket.Conn) {
+	initK8s()
 	for {
 		mt, message, err := ws.ReadMessage()
 		if err != nil {
