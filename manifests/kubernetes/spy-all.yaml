@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: spyservice
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: spyservice 
+  template:
+    metadata:
+      labels: 
+        app: spyservice 
+    spec:
+      terminationGracePeriodSeconds: 5
+      containers:
+      - name: gate-go-bumblebee
+        image:  herochinese/go-bumblebee-spy:master
+        ports:
+          - name: http
+            containerPort: 9041
+        resources:
+          requests: 
+            cpu: 100m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spyservice
+spec: 
+  type: ClusterIP
+  selector:
+    app: spyservice
+  ports:
+  - name: http
+    port: 9041
+    targetPort: 9041
+
+

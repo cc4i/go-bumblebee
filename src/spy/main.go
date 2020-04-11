@@ -9,4 +9,3 @@ func main() {
 
 	log.Fatal(k8s.Router().Run("0.0.0.0:9041"))
 }
-

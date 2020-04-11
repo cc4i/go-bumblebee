@@ -70,7 +70,41 @@ jobs:
             echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin
             docker build -t $DOCKER_USER/go-bumblebee-air:$CIRCLE_BRANCH .
             docker push $DOCKER_USER/go-bumblebee-air:$CIRCLE_BRANCH
-      
+
+  build-spy:
+    docker:
+      # specify the version
+      - image: circleci/golang:1.14.1
+
+    working_directory: /go/src/github.com/cc4i/go-bumblebee
+    steps:
+      - checkout
+
+      # specify any bash command here prefixed with `run: `
+      - run: 
+          name: building & test
+          command: |
+            which go
+            echo $PATH
+            cd /go/src/github.com/cc4i/go-bumblebee/src/spy
+            ls -F
+            make test
+
+  build-spy-image:
+    machine: true
+    working_directory: /go/src/github.com/cc4i/go-bumblebee
+    steps:
+      - checkout
+
+      # specify any bash command here prefixed with `run: `
+      - run: 
+          name: building image & push
+          command: |
+            cd /go/src/github.com/cc4i/go-bumblebee/src/spy
+            echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin
+            docker build -t $DOCKER_USER/go-bumblebee-spy:$CIRCLE_BRANCH .
+            docker push $DOCKER_USER/go-bumblebee-spy:$CIRCLE_BRANCH
+
 workflows:
   version: 2
   build-workflow:
@@ -83,4 +117,8 @@ workflows:
       - build-air-image:
           requires:
             - build-air
+      - build-spy
+      - build-spy-image:
+          requires:
+            - build-spy
 

@@ -35,31 +35,29 @@ type K8sClient interface {
 	GetCRD() string
 }
 
-func (cs *K8sContext)GetNamespaces() string {
+func (cs *K8sContext) GetNamespaces() string {
 	nl, err := cs.Clientset.CoreV1().Namespaces().List(metav1.ListOptions{})
-	if err!=nil {
+	if err != nil {
 		log.Error(err)
 		return err.Error()
 	}
 	var buf bytes.Buffer
 	buf.WriteString("Name\t\tStatus\t\tCreated\t\tAge\t\tLabels\n")
 	for _, n := range nl.Items {
-		buf.WriteString(n.Name+"\t\t")
-		buf.WriteString(string(n.Status.Phase)+"\t\t")
-		buf.WriteString(n.GetObjectMeta().GetCreationTimestamp().String()+"\t\t")
+		buf.WriteString(n.Name + "\t\t")
+		buf.WriteString(string(n.Status.Phase) + "\t\t")
+		buf.WriteString(n.GetObjectMeta().GetCreationTimestamp().String() + "\t\t")
 
 		h := fmt.Sprintf("%.2fh\t\t", time.Since(n.GetObjectMeta().GetCreationTimestamp().Local()).Hours())
 		buf.WriteString(h)
-		for k,v := range n.GetObjectMeta().GetLabels() {
-			buf.WriteString(k+"="+v+";")
+		for k, v := range n.GetObjectMeta().GetLabels() {
+			buf.WriteString(k + "=" + v + ";")
 		}
 
 		buf.WriteString("\n")
 	}
 	return buf.String()
 }
-
-
 
 func homeDir() string {
 	if h := os.Getenv("HOME"); h != "" {
@@ -94,5 +92,4 @@ func getConfig() *rest.Config {
 		return exc
 	}
 
-	return nil
 }

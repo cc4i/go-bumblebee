@@ -9,8 +9,7 @@ import (
 	"net/http"
 )
 
-type WebContext struct {}
-
+type WebContext struct{}
 
 type ServiceHandlers interface {
 	Handler(path string, c *gin.Context)
@@ -31,11 +30,10 @@ func init() {
 	if err != nil {
 		log.Error(err.Error())
 	}
-	k8s = &K8sContext{Clientset:clientset}
+	k8s = &K8sContext{Clientset: clientset}
 }
 
-
-func (web *WebContext)Handler(path string, c *gin.Context) {
+func (web *WebContext) Handler(path string, c *gin.Context) {
 	ws, err := upGrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
 		log.Print("upgrade:", err)
@@ -44,18 +42,16 @@ func (web *WebContext)Handler(path string, c *gin.Context) {
 	defer ws.Close()
 
 	switch path {
-		case "/ping":
-			Ping(ws)
-			break
-		case "/spy":
-			Spy(ws)
-			break
+	case "/ping":
+		Ping(ws)
+		break
+	case "/spy":
+		Spy(ws)
+		break
 
 	}
 
-
 }
-
 
 func Ping(ws *websocket.Conn) {
 	for {
@@ -75,7 +71,6 @@ func Ping(ws *websocket.Conn) {
 	}
 }
 
-
 func Spy(ws *websocket.Conn) {
 	for {
 		mt, message, err := ws.ReadMessage()
@@ -88,9 +83,9 @@ func Spy(ws *websocket.Conn) {
 		command := string(message)
 		var buf bytes.Buffer
 		switch command {
-			case "ns":
-				buf.WriteString(k8s.GetNamespaces())
-				break
+		case "ns":
+			buf.WriteString(k8s.GetNamespaces())
+			break
 		}
 		err = ws.WriteMessage(mt, buf.Bytes())
 		if err != nil {
@@ -101,7 +96,3 @@ func Spy(ws *websocket.Conn) {
 	}
 
 }
-
-
-
-

@@ -8,7 +8,10 @@ import (
 	"testing"
 )
 
-
+var _ = func() bool {
+	testing.Init()
+	return true
+}()
 
 func TestPing(t *testing.T) {
 	//content := "ping"
