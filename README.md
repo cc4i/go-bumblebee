@@ -46,6 +46,9 @@ http://$HOSTNAME:9030/spy
 telnet $HOSTNAME 9050
 
 # --- UDP ---
+
+# --- Web UI ---
+
 ```
 
 ## Tutorial
