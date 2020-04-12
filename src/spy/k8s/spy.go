@@ -91,7 +91,7 @@ func Spy(ws *websocket.Conn) {
 			buf.WriteString(k8s.GetNamespaces())
 			break
 		default:
-			buf.WriteString(" < "+command + "> is not valid.")
+			buf.WriteString(" < " + command + "> is not valid.")
 		}
 		err = ws.WriteMessage(mt, buf.Bytes())
 		if err != nil {
