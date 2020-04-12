@@ -45,8 +45,8 @@ func (web *WebContext) Handler(path string, c *gin.Context) {
 	defer ws.Close()
 
 	switch path {
-	case "/ping":
-		Ping(ws)
+	case "/wsping":
+		WSPing(ws)
 		break
 	case "/spy":
 		Spy(ws)
@@ -56,7 +56,7 @@ func (web *WebContext) Handler(path string, c *gin.Context) {
 
 }
 
-func Ping(ws *websocket.Conn) {
+func WSPing(ws *websocket.Conn) {
 	for {
 		mt, message, err := ws.ReadMessage()
 		if err != nil {
@@ -90,6 +90,8 @@ func Spy(ws *websocket.Conn) {
 		case "ns":
 			buf.WriteString(k8s.GetNamespaces())
 			break
+		default:
+			buf.WriteString(" < "+command + "> is not valid.")
 		}
 		err = ws.WriteMessage(mt, buf.Bytes())
 		if err != nil {

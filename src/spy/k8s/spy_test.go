@@ -13,7 +13,7 @@ var _ = func() bool {
 	return true
 }()
 
-func TestPing(t *testing.T) {
+func TestWSPing(t *testing.T) {
 	//content := "ping"
 	//body := ioutil.NopCloser(bytes.NewReader([]byte(content)))
 

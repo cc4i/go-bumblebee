@@ -37,7 +37,7 @@ func tcpServer(endPoint string) {
 
 func init() {
 	log.SetOutput(os.Stdout)
-	log.SetLevel(log.InfoLevel)
+	log.SetLevel(log.DebugLevel)
 }
 
 func main() {
