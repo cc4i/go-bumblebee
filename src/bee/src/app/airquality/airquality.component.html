@@ -1,3 +1,62 @@
-<p>airquality works!</p>
+<div class="example-container mat-elevation-z8">
+    <div class="example-form-container">
+        <form [formGroup]="options" [style.fontSize.px]="getFontSize()">
+            <mat-form-field class="example-full-width">
+                <input matInput disabled value="HTTP 1.x/2">
+              </mat-form-field>
 
-<div><span>city: </span>{{air.city | uppercase}}</div>
+            <mat-form-field appearance="fill" class="example-full-width">
+                <mat-label>URL</mat-label>
+                <input matInput #svrUrl>
+                <mat-icon matSuffix>location_searching</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="example-full-width">
+                <mat-label>Request Content</mat-label>
+                <textarea matInput placeholder="Ex. request json/text" #reqContent></textarea>
+              </mat-form-field>
+
+              <mat-form-field appearance="fill" >
+                <mat-label>City size (Fun)</mat-label>
+                <input matInput type="number" placeholder="Ex. 12" [formControl]="fontSizeControl" min="10">
+                <span matSuffix>px</span>
+                <mat-error *ngIf="fontSizeControl.invalid">Min size: 10px</mat-error>
+              </mat-form-field>
+
+          </form>
+          <div class="example-button-container">
+            <span>
+                <button mat-raised-button (click)="getAir()">Submit</button>
+            </span>
+            
+          </div>
+          
+    </div>
+    <!-- <div class="example-table-container">
+        <mat-list *ngFor="let d of data">
+            <mat-list-item>{{d.response}}</mat-list-item>
+            <mat-divider></mat-divider>
+        </mat-list>
+
+    </div> -->
+    <mat-expansion-panel *ngFor="let d of data">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Reqest Time: {{d.request_time | date:'full'}}
+          </mat-panel-title>
+          <mat-panel-description>
+            Duration: {{d.duration | number}} ms
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+    
+        <mat-form-field class="example-full-width">
+          <mat-label>Response</mat-label>
+          <textarea matInput value="{{d.response}}" ></textarea>
+        </mat-form-field>
+    
+      </mat-expansion-panel>
+    
+
+   
+    
+</div>

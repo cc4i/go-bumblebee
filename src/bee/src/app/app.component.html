@@ -1,3 +1,87 @@
-<h2>{{title}}</h2>
 
-<app-airquality></app-airquality>
+
+
+<mat-toolbar class="mat-app-background" color="primary">
+    <span>{{title}}</span>
+    <span></span>
+    <div>
+        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+            <mat-icon>dashboard</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item disabled>
+                <mat-icon>mail</mat-icon>
+                <span>Check email</span>
+            </button>
+            <button mat-menu-item>
+                <mat-icon>notifications_off</mat-icon>
+                <span>Disable alerts</span>
+            </button>
+        </mat-menu>
+    </div>
+    <span class="fill-space"></span>
+    <span>
+        <form>
+            <mat-form-field appearance="fill">
+                <mat-label>KubeCtx</mat-label>
+                <input matInput #first>
+                <mat-icon matSuffix>waves</mat-icon>
+              </mat-form-field>
+
+          </form>
+          
+        </span>
+
+</mat-toolbar>
+
+
+<mat-tab-group>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="example-tab-icon">http</mat-icon>
+        HTTP
+      </ng-template>
+      <app-airquality></app-airquality>
+    </mat-tab>
+  
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="example-tab-icon">done_all</mat-icon>
+        gRPC
+      </ng-template>
+      Content 2
+    </mat-tab>
+  
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="example-tab-icon">language</mat-icon>
+        graphQL
+      </ng-template>
+  
+      Content 3
+    </mat-tab>
+    <mat-tab>
+        <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">track_changes</mat-icon>
+            Websocket
+        </ng-template>
+    
+        Content 3
+    </mat-tab>
+    <mat-tab>
+    <ng-template mat-tab-label>
+        <mat-icon class="example-tab-icon">flip_to_back</mat-icon>
+        TCP
+    </ng-template>
+
+    Content 3
+    </mat-tab>
+    <mat-tab>
+    <ng-template mat-tab-label>
+        <mat-icon class="example-tab-icon">flip_to_front</mat-icon>
+        UDP
+    </ng-template>
+
+    Content 3
+    </mat-tab>   
+</mat-tab-group>
