@@ -51,13 +51,15 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTreeModule} from '@angular/material/tree';
 import { FormsModule, ReactiveFormsModule }         from '@angular/forms';
 import { HttpClientModule  }   from '@angular/common/http';
+import { VoiceComponent } from './voice/voice.component';
 
 
 //////
 @NgModule({
   declarations: [
     AppComponent,
-    AirqualityComponent
+    AirqualityComponent,
+    VoiceComponent
   ],
   imports: [
     BrowserModule,

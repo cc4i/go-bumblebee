@@ -6,6 +6,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, tap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 
+
+//declare var MediaRecorder: any;
+
 @Component({
   selector: 'app-airquality',
   templateUrl: './airquality.component.html',
@@ -26,9 +29,8 @@ export class AirqualityComponent implements OnInit {
       color: this.colorControl,
       fontSize: this.fontSizeControl,
     });
-    
-
   }
+
   ngOnInit(): void {
   }
   
@@ -83,6 +85,11 @@ export class AirqualityComponent implements OnInit {
   private log(message: string) {
     console.log(`AirService: ${message}`);
   }
+
+
+
+  
+
 }
 
 export interface HttpRR {
