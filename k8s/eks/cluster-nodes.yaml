@@ -1,0 +1,30 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: go-bumblebee-cluster
+  region: ap-southeast-1
+  version: "1.15"
+
+nodeGroups:
+  - name: unmanaged-ng
+    labels: { role: unmanaged-ng }
+    instanceType: c5.large
+    minSize: 2
+    maxSize: 6
+    ssh:
+      allow: true
+    iam:
+      withAddonPolicies:
+        imageBuilder: true
+        externalDNS: true
+        certManager: true
+        ebs: true
+        fsx: true
+        efs: true
+        appMesh: true
+        xRay: true
+        autoScaler: true
+        albIngress: true
+        cloudWatch: true
+

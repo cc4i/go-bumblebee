@@ -7,7 +7,7 @@ kind: Kustomization
 resources:
 - bee-deployment.yaml
 - bee-service.yaml
-- bee-service-external.yaml
+# - bee-service-external.yaml
 
 # # namespace to deploy all resources to
 # namespace: go-bumblebee

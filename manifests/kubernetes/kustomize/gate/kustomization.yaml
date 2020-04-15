@@ -7,7 +7,7 @@ kind: Kustomization
 resources:
 - gate-deployment.yaml
 - gate-service.yaml
-- gate-service-external.yaml
+# - gate-service-external.yaml
 
 # # namespace to deploy all resources to
 # namespace: go-bumblebee
