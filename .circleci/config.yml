@@ -118,7 +118,8 @@ jobs:
           command: |
             cd ~/go-bumblebee/src/bee
             npm install 
-            npm install -g @angular/cli@9.1.1
+            npm install @angular/cli@9.1.1
+            export PATH=~/go-bumblebee/src/bee/node_modules/@angular/cli/bin:$PATH
             ng test --watch=false
 
   build-bee-image:
