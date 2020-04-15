@@ -5,10 +5,10 @@
     <span>{{title}}</span>
     <span></span>
     <div>
-        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+        <button mat-icon-button aria-label="Example icon-button with a menu">
             <mat-icon>dashboard</mat-icon>
         </button>
-        <mat-menu #menu="matMenu">
+        <mat-menu>
             <button mat-menu-item disabled>
                 <mat-icon>mail</mat-icon>
                 <span>Check email</span>
@@ -24,7 +24,7 @@
         <form>
             <mat-form-field appearance="fill">
                 <mat-label>KubeCtx</mat-label>
-                <input matInput #first>
+                <input matInput>
                 <mat-icon matSuffix>waves</mat-icon>
               </mat-form-field>
 

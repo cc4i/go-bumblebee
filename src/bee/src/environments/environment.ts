@@ -3,7 +3,13 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  httpEndpoint: 'http://127.0.0.1:9010',
+  grpcEndpoint: 'http://127.0.0.1:9020',
+  gqlEndpoint: 'http://127.0.0.1:9030',
+  wsEndpoint: 'http://127.0.0.1:9040',
+  tcpEndpoint: '127.0.0.1:9050',
+  udpEndpoint: '127.0.0.1:9060',
 };
 
 /*

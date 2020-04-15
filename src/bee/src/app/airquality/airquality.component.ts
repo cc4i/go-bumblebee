@@ -5,6 +5,7 @@ import {Air} from './air';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, tap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
+import { environment } from './../../environments/environment';
 
 
 //declare var MediaRecorder: any;
@@ -21,6 +22,7 @@ export class AirqualityComponent implements OnInit {
   options: FormGroup;
   colorControl = new FormControl('primary');
   fontSizeControl = new FormControl(16, Validators.min(10));
+  apiUri: string;
 
 
   constructor(fb: FormBuilder, private http: HttpClient) {
@@ -29,6 +31,7 @@ export class AirqualityComponent implements OnInit {
       color: this.colorControl,
       fontSize: this.fontSizeControl,
     });
+    
   }
 
   ngOnInit(): void {
@@ -56,13 +59,12 @@ export class AirqualityComponent implements OnInit {
 
   }
   getHttpAir(): Observable<object> {
-    console.log("send req ...")
-    //"http://a4947283c471d4a1dbae2b088549ac20-1381614647.ap-southeast-1.elb.amazonaws.com:9010/air/beijing"
-    return this.http.get<object>("http://127.0.0.1:9010/air/beijing")
-    .pipe(
-      tap(_ => this.log('fetched air')),
-      catchError(this.handleError<object>('getAir'))
-    )
+   
+    return this.http.get<object>(environment.httpEndpoint+this.apiUri)
+      .pipe(
+        tap(_ => this.log('fetched air')),
+        catchError(this.handleError<object>('getAir'))
+      )
 
     
 
@@ -85,10 +87,6 @@ export class AirqualityComponent implements OnInit {
   private log(message: string) {
     console.log(`AirService: ${message}`);
   }
-
-
-
-  
 
 }
 

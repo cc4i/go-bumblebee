@@ -1,6 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef} from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { MatButtonModule } from '@angular/material/button';
 
 declare var MediaRecorder: any;
 

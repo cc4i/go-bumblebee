@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { VoiceComponent } from './voice.component';
+import { ChangeDetectorRef} from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 
 describe('VoiceComponent', () => {
   let component: VoiceComponent;
@@ -8,7 +10,11 @@ describe('VoiceComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ VoiceComponent ]
+      declarations: [ VoiceComponent ],
+      providers: [
+        { provide: ChangeDetectorRef},
+        { provide: DomSanitizer }
+      ]
     })
     .compileComponents();
   }));
