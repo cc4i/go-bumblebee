@@ -1,6 +1,7 @@
 package httpsvr
 
 import (
+	"context"
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"log"
@@ -18,7 +19,7 @@ func TestHttpGet(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	body, err := HttpGet(ts.URL)
+	body, err := HttpGet(context.TODO(), ts.URL)
 	if err != nil {
 		log.Fatal(err)
 	}

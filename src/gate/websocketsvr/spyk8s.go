@@ -59,7 +59,7 @@ func Forward2Spy(command string) []byte {
 	err = sws.WriteMessage(websocket.TextMessage, []byte(command))
 	if err != nil {
 		log.Println("write to spy:", err)
-		if e, ok := err.(*net.OpError); ok || websocket.IsCloseError(err) || websocket.IsUnexpectedCloseError(err){
+		if e, ok := err.(*net.OpError); ok || websocket.IsCloseError(err) || websocket.IsUnexpectedCloseError(err) {
 			log.Println(e)
 			err = Reconnect(url, true)
 			if err != nil {
@@ -76,16 +76,15 @@ func Forward2Spy(command string) []byte {
 	return message
 }
 
-
 func Reconnect(url string, force bool) error {
 	if sws == nil || force {
 		if force {
-			if sws!=nil {
+			if sws != nil {
 				sws.Close()
 				sws = nil
 			}
 		}
-		tws,_, err := websocket.DefaultDialer.Dial(url, nil)
+		tws, _, err := websocket.DefaultDialer.Dial(url, nil)
 		if err != nil {
 			log.Printf("Connect to %s with error: %s", url, err)
 			return err

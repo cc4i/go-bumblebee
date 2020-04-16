@@ -56,9 +56,13 @@ telnet $HOSTNAME 9050
 ### 1. Go-Bumblebee through CI/CD pipleline
 Build up CI/CD capabilities around Kubernetes, we have so many ecllecnt choices due to in incredibly rich ecosystem. This tutorial will go with free lunch to taste modernized release pipeline.
 
-GitHub + CircleCI + AgroCD
+- GitHub + CircleCI + AgroCD
+- GitHub + CircleCI + Spinnaker
+
 
 ### 2. Manage traffic with Istio
+Leverage Istio is a great idea for manage traffic, especially Istio 1.5 was evolved a lot. 
+
 
 ### 3. Improve Observability with Istio
 
