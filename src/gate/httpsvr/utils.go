@@ -2,8 +2,10 @@ package httpsvr
 
 import (
 	"bytes"
+	"context"
 	"crypto/tls"
 	"encoding/json"
+	opentracing "github.com/opentracing/opentracing-go"
 	"io/ioutil"
 	"net/http"
 
@@ -27,7 +29,9 @@ func init() {
 
 }
 
-func HttpGet(url string) ([]byte, error) {
+func HttpGet(ctx context.Context, url string) ([]byte, error) {
+	span, _ := opentracing.StartSpanFromContext(ctx, "HttpGet")
+	defer span.Finish()
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	resp, err := Client.Do(req)

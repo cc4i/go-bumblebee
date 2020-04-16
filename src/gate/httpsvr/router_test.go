@@ -2,6 +2,7 @@ package httpsvr
 
 import (
 	"bytes"
+	"context"
 	"gate/mocks"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
@@ -22,7 +23,7 @@ func TestPing(t *testing.T) {
 		{"Test the content of response", "", "pong"},
 	}
 
-	r := Router()
+	r := Router(context.TODO())
 	recorder := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/ping", nil)
 	r.ServeHTTP(recorder, req)
@@ -52,7 +53,7 @@ func TestAirOfCity(t *testing.T) {
 		}, nil
 	}
 
-	r := Router()
+	r := Router(context.TODO())
 	recorder := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/air/beijing", nil)
 

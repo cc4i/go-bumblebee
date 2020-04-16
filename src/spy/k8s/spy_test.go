@@ -13,7 +13,7 @@ var _ = func() bool {
 	return true
 }()
 
-func TestPing(t *testing.T) {
+func TestWSPing(t *testing.T) {
 	//content := "ping"
 	//body := ioutil.NopCloser(bytes.NewReader([]byte(content)))
 
@@ -21,7 +21,7 @@ func TestPing(t *testing.T) {
 	server := httptest.NewServer(r)
 	defer server.Close()
 
-	wsURL := "ws" + strings.TrimPrefix(server.URL, "http") + "/ping"
+	wsURL := "ws" + strings.TrimPrefix(server.URL, "http") + "/wsping"
 	ws, _, err := websocket.DefaultDialer.Dial(wsURL, nil)
 	if err != nil {
 		t.Fatalf("could not open a ws connection on %s %v", wsURL, err)

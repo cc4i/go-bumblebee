@@ -1,10 +1,8 @@
 package k8s
 
 import (
-	"bytes"
 	"flag"
-	"fmt"
-	log "github.com/sirupsen/logrus"
+	"github.com/pkg/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -27,36 +25,62 @@ type K8sContext struct {
 	Clientset *kubernetes.Clientset
 }
 
+type Label struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
+}
+type MyNamespace struct {
+	Name    string    `json:"name"`
+	Status  string    `json:"status"`
+	Created time.Time `json:"created"`
+	Age     int64     `json:"age"` //second
+	Labels  []Label   `json:"labels"`
+}
+
+type MyDeploymentPods struct {}
+type MyServicePods struct {}
+
 type K8sClient interface {
-	GetNamespaces() string
-	GetAllServicesPods(namespace string) string
-	GetAllDeploymentsPods(namespace string) string
+	GetNamespaces() ([]MyNamespace, error)
+	GetAllDeploymentsPods(namespace string) ([]MyServicePods, error)
+	GetAllServicesPods(namespace string) ([]MyServicePods, error)
 	GetAll() string
 	GetCRD() string
 }
 
-func (cs *K8sContext) GetNamespaces() string {
+func (cs *K8sContext) GetAllServicesPods(namespace string) ([]MyServicePods, error) {
+	servicePods := []MyServicePods{}
+
+
+	return servicePods, nil
+}
+
+func (cs *K8sContext) GetNamespaces() ([]MyNamespace, error) {
+	namespaces := []MyNamespace{}
 	nl, err := cs.Clientset.CoreV1().Namespaces().List(metav1.ListOptions{})
 	if err != nil {
-		log.Error(err)
-		return err.Error()
+		return namespaces, errors.Wrapf(err, "Failed to retrieve namespace from K8s cluster: %s", err.Error())
 	}
-	var buf bytes.Buffer
-	buf.WriteString("Name\t\tStatus\t\tCreated\t\tAge\t\tLabels\n")
 	for _, n := range nl.Items {
-		buf.WriteString(n.Name + "\t\t")
-		buf.WriteString(string(n.Status.Phase) + "\t\t")
-		buf.WriteString(n.GetObjectMeta().GetCreationTimestamp().String() + "\t\t")
-
-		h := fmt.Sprintf("%.2fh\t\t", time.Since(n.GetObjectMeta().GetCreationTimestamp().Local()).Hours())
-		buf.WriteString(h)
+		labels := []Label{}
 		for k, v := range n.GetObjectMeta().GetLabels() {
-			buf.WriteString(k + "=" + v + ";")
-		}
+			label := Label{
+				Key:   k,
+				Value: v,
+			}
+			labels = append(labels, label)
 
-		buf.WriteString("\n")
+		}
+		namespaces = append(namespaces, MyNamespace{
+			Name:    n.Name,
+			Status:  string(n.Status.Phase),
+			Created: n.GetObjectMeta().GetCreationTimestamp().Local(),
+			Age:     time.Since(n.GetObjectMeta().GetCreationTimestamp().Local()).Milliseconds(),
+			Labels:  labels,
+		})
 	}
-	return buf.String()
+	return namespaces, nil
+
 }
 
 func homeDir() string {

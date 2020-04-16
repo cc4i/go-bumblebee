@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: beeservice
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: beeservice 
+  template:
+    metadata:
+      labels: 
+        app: beeservice 
+    spec:
+      terminationGracePeriodSeconds: 5
+      containers:
+      - name: bee-go-bumblebee
+        image:  herochinese/go-bumblebee-bee:master
+        ports:
+          - name: http
+            containerPort: 9000
+        resources:
+          requests: 
+            cpu: 100m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: beeservice
+spec: 
+  type: ClusterIP
+  selector:
+    app: beeservice
+  ports:
+  - name: http
+    port: 9000
+    targetPort: 9000
+
+

@@ -1,0 +1,21 @@
+
+
+<div class="mat-app-background">
+
+    <span>
+        <button mat-raised-button (click)="startRecording()" [disabled]="disable_record_btn">
+            Start record<mat-icon>play_arrow</mat-icon>
+        </button>
+        
+    </span>
+    <span class="need-space "></span>
+    <span>
+        <button mat-raised-button #stopBtton (click)="stopRecording()" [disabled]="disable_stop_btn">
+            Stop<mat-icon>stop</mat-icon>
+        </button>
+    </span>
+
+</div>
+<div>
+    <audio *ngFor="let audio of audioFiles" controls='true' [src]="audio"></audio>
+</div>

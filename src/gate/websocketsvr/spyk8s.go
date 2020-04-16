@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	log "github.com/sirupsen/logrus"
+	"net"
 	"os"
 )
 
@@ -15,9 +16,15 @@ func Spy(c *gin.Context) {
 		log.Print("upgrade:", err)
 		return
 	}
+	log.Printf("Client (%s) is connected at (%s) by WebSocket", ws.RemoteAddr(), ws.LocalAddr())
+
+	ws.SetCloseHandler(func(code int, text string) error {
+		return ws.Close()
+	})
 	defer ws.Close()
 
 	MessageHandler(ws)
+
 }
 
 func MessageHandler(ws *websocket.Conn) {
@@ -43,17 +50,22 @@ func MessageHandler(ws *websocket.Conn) {
 }
 
 func Forward2Spy(command string) []byte {
-	if sws == nil {
-		wsUrl := os.Getenv("SPY_SERVICE_ENDPOINT")
-		ws, res, err := websocket.DefaultDialer.Dial("ws://"+wsUrl+"/spy", nil)
-		if err != nil {
-			log.Printf("Connect to %s with error: %s/code: %d", wsUrl, err, res.StatusCode)
-		}
-		sws = ws
+	endpoint := os.Getenv("SPY_SERVICE_ENDPOINT")
+	url := "ws://" + endpoint + "/spy"
+	err := Reconnect(url, false)
+	if err != nil {
+		return []byte(err.Error())
 	}
-	err := sws.WriteMessage(websocket.TextMessage, []byte(command))
+	err = sws.WriteMessage(websocket.TextMessage, []byte(command))
 	if err != nil {
 		log.Println("write to spy:", err)
+		if e, ok := err.(*net.OpError); ok || websocket.IsCloseError(err) || websocket.IsUnexpectedCloseError(err) {
+			log.Println(e)
+			err = Reconnect(url, true)
+			if err != nil {
+				return []byte(err.Error())
+			}
+		}
 	}
 	_, message, err := sws.ReadMessage()
 	if err != nil {
@@ -62,4 +74,33 @@ func Forward2Spy(command string) []byte {
 	log.Printf("recv from spy: %s", message)
 
 	return message
+}
+
+func Reconnect(url string, force bool) error {
+	if sws == nil || force {
+		if force {
+			if sws != nil {
+				sws.Close()
+				sws = nil
+			}
+		}
+		tws, _, err := websocket.DefaultDialer.Dial(url, nil)
+		if err != nil {
+			log.Printf("Connect to %s with error: %s", url, err)
+			return err
+		}
+		sws = tws
+		sws.SetCloseHandler(func(code int, text string) error {
+			log.Printf("Close connection from %s ", sws.RemoteAddr())
+			sws, _, err = websocket.DefaultDialer.Dial(url, nil)
+			if err != nil {
+				log.Printf("ReConnect to %s with error: %s", url, err)
+			} else {
+				log.Printf("ReConnect to %s with success", url)
+			}
+			return err
+		})
+		return err
+	}
+	return nil
 }

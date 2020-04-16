@@ -103,6 +103,38 @@ jobs:
             echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin
             docker build -t $DOCKER_USER/go-bumblebee-spy:$CIRCLE_BRANCH .
             docker push $DOCKER_USER/go-bumblebee-spy:$CIRCLE_BRANCH
+  build-bee:
+    docker:
+      # specify the version
+      - image: circleci/node:13.12-browsers
+
+    working_directory: ~/go-bumblebee
+    steps:
+      - checkout
+
+      # specify any bash command here prefixed with `run: `
+      - run: 
+          name: building & test
+          command: |
+            cd ~/go-bumblebee/src/bee
+            npm install 
+            npm install @angular/cli@9.1.1
+            export PATH=~/go-bumblebee/src/bee/node_modules/@angular/cli/bin:$PATH
+            ng test --watch=false
+
+  build-bee-image:
+    machine: true
+    steps:
+      - checkout
+
+      # specify any bash command here prefixed with `run: `
+      - run: 
+          name: building image & push
+          command: |
+            cd /home/circleci/project/src/bee
+            echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin
+            docker build -t $DOCKER_USER/go-bumblebee-bee:$CIRCLE_BRANCH .
+            docker push $DOCKER_USER/go-bumblebee-bee:$CIRCLE_BRANCH
 
 workflows:
   version: 2
@@ -123,3 +155,7 @@ workflows:
           requires:
             - build-spy
 
+      - build-bee
+      - build-bee-image:
+          requires:
+            - build-bee
