@@ -22,38 +22,41 @@ func httpServer(ctx context.Context, endPoint string) {
 	span, _ := opentracing.StartSpanFromContext(ctx, "httpServer")
 	defer span.Finish()
 
-	log.Printf("Serving on %s for Http 1/2 Service ...", endPoint)
+	log.Info("Serving on %s for Http 1/2 Service ...", endPoint)
 	log.Fatal(httpsvr.Router(ctx).Run(endPoint))
 }
 
 // Run gRPC server
 func gRpcServer(endPoint string) {
-	log.Printf("Serving on %s for gRPC Service ...", endPoint)
+	log.Info("Serving on %s for gRPC Service ...", endPoint)
 
 }
 
 // Run graphQL server
 func graphQLServer(endPoint string) {
-	log.Printf("Serving on %s for GraphQL Service ...", endPoint)
+	log.Info("Serving on %s for GraphQL Service ...", endPoint)
 	log.Fatal(graphqlsvr.Router().Run(endPoint))
 }
 
 // Run websocket server
 func websocketServer(endPoint string) {
-	log.Printf("Serving on %s for WebSocket Service ...", endPoint)
+	log.Info("Serving on %s for WebSocket Service ...", endPoint)
 	log.Fatal(websocketsvr.Router().Run(endPoint))
 
 }
 
 // Run raw TCP server
 func tcpServer(endPoint string) {
-	log.Printf("Serving on %s for raw TCP Service ...", endPoint)
+	log.Info("Serving on %s for raw TCP Service ...", endPoint)
 	log.Fatal(tcpsvr.RunServer(endPoint))
 }
 
 func init() {
 	log.SetOutput(os.Stdout)
 	log.SetLevel(log.DebugLevel)
+	log.SetFormatter(&log.JSONFormatter{})
+
+
 }
 
 func initJaeger(service string) (opentracing.Tracer, io.Closer) {

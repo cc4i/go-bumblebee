@@ -1,0 +1,110 @@
+NAME: hellobee
+LAST DEPLOYED: Fri Apr 17 17:18:14 2020
+NAMESPACE: go-bumble
+STATUS: pending-install
+REVISION: 1
+HOOKS:
+---
+# Source: bee/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "hellobee-test-connection"
+  labels:
+    helm.sh/chart: bee-0.1.0
+    app.kubernetes.io/name: bee
+    app.kubernetes.io/instance: hellobee
+    app.kubernetes.io/version: "front-end-site-v1"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['hellobee:9000']
+  restartPolicy: Never
+MANIFEST:
+---
+# Source: bee/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: hellobee
+  labels:
+    helm.sh/chart: bee-0.1.0
+    app.kubernetes.io/name: bee
+    app.kubernetes.io/instance: hellobee
+    app.kubernetes.io/version: "front-end-site-v1"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9000
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: bee
+    app.kubernetes.io/instance: hellobee
+---
+# Source: bee/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hellobee
+  labels:
+    helm.sh/chart: bee-0.1.0
+    app.kubernetes.io/name: bee
+    app.kubernetes.io/instance: hellobee
+    app.kubernetes.io/version: "front-end-site-v1"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: bee
+      app.kubernetes.io/instance: hellobee
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: bee
+        app.kubernetes.io/instance: hellobee
+    spec:
+      serviceAccountName: default
+      securityContext:
+        {}
+      containers:
+        - name: bee
+          securityContext:
+            {}
+          image: "herochinese/go-bumblebee-bee:front-end-site-v1"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 9000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 9000
+              scheme: HTTP
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 9000
+              scheme: HTTP
+          resources:
+            limits:
+              cpu: 200m
+              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 64Mi
+
+NOTES:
+1. Get the application URL by running these commands:
+  export POD_NAME=$(kubectl get pods --namespace go-bumble -l "app.kubernetes.io/name=bee,app.kubernetes.io/instance=hellobee" -o jsonpath="{.items[0].metadata.name}")
+  echo "Visit http://127.0.0.1:9000 to use your application"
+  kubectl --namespace go-bumble port-forward $POD_NAME 9000:9000
