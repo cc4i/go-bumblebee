@@ -1,6 +1,6 @@
 package graph
 
-import "gate/graphqlsvr/graph/model"
+import "gql/graph/model"
 
 // This file will not be regenerated automatically.
 //

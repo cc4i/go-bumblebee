@@ -63,6 +63,14 @@ Build up CI/CD capabilities around Kubernetes, we have so many ecllecnt choices 
 ### 2. Manage traffic with Istio
 Leverage Istio is a great idea for manage traffic, especially Istio 1.5 was evolved a lot. 
 
+- Routing 
+- Fault injection
+- Traffic shifting 
+- Circuit breaking
+- Mirroring
+- Ingress gateway
+
+
 
 ### 3. Improve Observability with Istio
 

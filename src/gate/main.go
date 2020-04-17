@@ -3,7 +3,6 @@ package main
 
 import (
 	"context"
-	"gate/graphqlsvr"
 	"gate/httpsvr"
 	"gate/tcpsvr"
 	"gate/websocketsvr"
@@ -22,32 +21,26 @@ func httpServer(ctx context.Context, endPoint string) {
 	span, _ := opentracing.StartSpanFromContext(ctx, "httpServer")
 	defer span.Finish()
 
-	log.Info("Serving on %s for Http 1/2 Service ...", endPoint)
+	log.Info("Serving on for Http 1/2 Service ...", endPoint)
 	log.Fatal(httpsvr.Router(ctx).Run(endPoint))
 }
 
 // Run gRPC server
 func gRpcServer(endPoint string) {
-	log.Info("Serving on %s for gRPC Service ...", endPoint)
+	log.Info("Serving on for gRPC Service ...", endPoint)
 
-}
-
-// Run graphQL server
-func graphQLServer(endPoint string) {
-	log.Info("Serving on %s for GraphQL Service ...", endPoint)
-	log.Fatal(graphqlsvr.Router().Run(endPoint))
 }
 
 // Run websocket server
 func websocketServer(endPoint string) {
-	log.Info("Serving on %s for WebSocket Service ...", endPoint)
+	log.Info("Serving on for WebSocket Service ...", endPoint)
 	log.Fatal(websocketsvr.Router().Run(endPoint))
 
 }
 
 // Run raw TCP server
 func tcpServer(endPoint string) {
-	log.Info("Serving on %s for raw TCP Service ...", endPoint)
+	log.Info("Serving on for raw TCP Service ...", endPoint)
 	log.Fatal(tcpsvr.RunServer(endPoint))
 }
 
@@ -55,7 +48,6 @@ func init() {
 	log.SetOutput(os.Stdout)
 	log.SetLevel(log.DebugLevel)
 	log.SetFormatter(&log.JSONFormatter{})
-
 
 }
 
@@ -88,12 +80,6 @@ func main() {
 	ctx := opentracing.ContextWithSpan(context.Background(), span)
 	go httpServer(ctx, "0.0.0.0:9010")
 	defer span.Finish()
-
-	//gql
-	span2 := tracer.StartSpan("gql")
-	span2.SetTag("gql-to", "gql-9040")
-	go graphQLServer("0.0.0.0:9030")
-	defer span2.Finish()
 
 	//ws
 	span3 := tracer.StartSpan("ws")

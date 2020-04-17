@@ -6,8 +6,8 @@ package graph
 import (
 	"context"
 	"fmt"
-	"gate/graphqlsvr/graph/generated"
-	"gate/graphqlsvr/graph/model"
+	"gql/graph/generated"
+	"gql/graph/model"
 	"math/rand"
 )
 

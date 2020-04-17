@@ -1,6 +1,6 @@
 
 # Image URL to use all building/pushing
-IMG ?= spy:latest
+IMG ?= air:latest
 # Docker Hub username / password
 DOCKER_PASS =
 DOCKER_USER =
@@ -21,7 +21,7 @@ test:	fmt	vet
 
 # Build manager binary
 manager:	fmt	vet
-	go build -o spy main.go
+	go build -o air main.go
 
 run:	fmt	vet
 	go run ./main.go

@@ -1,29 +1,20 @@
 
 # Image URL to use all building/pushing
-IMG ?= spy:latest
+IMG ?= gate:latest
 # Docker Hub username / password
 DOCKER_PASS =
 DOCKER_USER =
 
+all: manager
 
-all:	manager
-
-test:	fmt	vet
-
-	@if [ -f ${HOME}/.kube/config ]; then \
-		echo "";\
-	else\
-		mkdir ${HOME}/.kube;\
-		touch ${HOME}/.kube/config;\
-	fi
+test: generate fmt vet
 	go test ./... -v -cover
 
-
 # Build manager binary
-manager:	fmt	vet
-	go build -o spy main.go
+manager: generate fmt vet
+	go build -o gql main.go
 
-run:	fmt	vet
+run: generate fmt vet
 	go run ./main.go
 
 # Run go fmt against code
@@ -34,12 +25,15 @@ fmt:
 vet:
 	go vet ./...
 
+generate:
+	go run github.com/99designs/gqlgen generate ./...
+
 # Build the docker image
 docker-build: test
 	docker build . -t ${IMG}
 
 # Push the docker image
 docker-push:
-	echo ${DOCKER_PASS} | docker login --username ${DOCKER_USER} --password-stdin
+	echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin
 	docker push ${IMG}
 

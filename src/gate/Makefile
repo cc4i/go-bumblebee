@@ -7,14 +7,14 @@ DOCKER_USER =
 
 all: manager
 
-test: generate fmt vet
+test: fmt vet
 	go test ./... -v -cover
 
 # Build manager binary
-manager: generate fmt vet
+manager: fmt vet
 	go build -o gate main.go
 
-run: generate fmt vet
+run: fmt vet
 	go run ./main.go
 
 # Run go fmt against code
@@ -25,8 +25,8 @@ fmt:
 vet:
 	go vet ./...
 
-generate:
-	go run github.com/99designs/gqlgen generate ./...
+#generate:
+#	go run github.com/99designs/gqlgen generate ./...
 
 # Build the docker image
 docker-build: test

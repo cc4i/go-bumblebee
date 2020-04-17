@@ -19,9 +19,7 @@ jobs:
             which go
             echo $PATH
             cd /go/src/github.com/cc4i/go-bumblebee/src/gate
-            ls -F
-            go get -v -d
-            go test -v -cover ./...
+            make test
 
   build-gate-image:
     machine: true
