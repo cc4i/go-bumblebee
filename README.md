@@ -56,7 +56,13 @@ telnet $HOSTNAME 9050
 ### 1. Go-Bumblebee through CI/CD pipleline
 Build up CI/CD capabilities around Kubernetes, we have so many ecllecnt choices due to in incredibly rich ecosystem. This tutorial will go with free lunch to taste modernized release pipeline.
 
-- GitHub + CircleCI + AgroCD (Kustomization/helm)
+- [GitHub + CircleCI + AgroCD](./docs/github-circleci-argocd.md)
+    - [yaml](./docs/github-circleci-argocd.md#yaml)
+    - [kustomized yaml](./docs/github-circleci-argocd.md#kustomized-yaml)
+    - [helm](./docs/github-circleci-argocd.md#helm)
+    - [blue/green deployment](./docs/github-circleci-argocd.md#blue-green-deployment)
+    - [canary deployment](./docs/github-circleci-argocd.md#canary-deployment)
+
 - GitHub + CircleCI + Spinnaker
 
 
