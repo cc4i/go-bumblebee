@@ -19,8 +19,11 @@ import (
 
 func Router() *gin.Engine {
 	r := gin.Default()
+
 	r.POST("/query", graphqlHandler())
+
 	r.GET("/", playgroundHandler())
+
 	r.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")
 	})

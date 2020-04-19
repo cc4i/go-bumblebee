@@ -2,19 +2,56 @@
 
 package model
 
-type NewTodo struct {
-	Text   string `json:"text"`
-	UserID string `json:"userId"`
+type AirQuality struct {
+	IndexCityVHash string `json:"IndexCityVHash"`
+	IndexCity      string `json:"IndexCity"`
+	StationIndex   int    `json:"StationIndex"`
+	Aqi            int    `json:"AQI"`
+	City           string `json:"City"`
+	CityCn         string `json:"CityCN"`
+	Latitude       string `json:"Latitude"`
+	Longitude      string `json:"Longitude"`
+	Co             string `json:"Co"`
+	H              string `json:"H"`
+	No2            string `json:"No2"`
+	O3             string `json:"O3"`
+	P              string `json:"P"`
+	Pm10           string `json:"Pm10"`
+	Pm25           string `json:"Pm25"`
+	So2            string `json:"So2"`
+	T              string `json:"T"`
+	W              string `json:"W"`
+	S              string `json:"S"`
+	Tz             string `json:"TZ"`
+	V              int    `json:"V"`
 }
 
-type Todo struct {
-	ID   string `json:"id"`
-	Text string `json:"text"`
-	Done bool   `json:"done"`
-	User *User  `json:"user"`
+type AirQualityHistory struct {
+	ID         string      `json:"id"`
+	Created    int         `json:"created"`
+	AirQuality *AirQuality `json:"airQuality"`
 }
 
-type User struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+type NewAirQuality struct {
+	IndexCityVHash string `json:"IndexCityVHash"`
+	IndexCity      string `json:"IndexCity"`
+	StationIndex   string `json:"StationIndex"`
+	Aqi            string `json:"AQI"`
+	City           string `json:"City"`
+	CityCn         string `json:"CityCN"`
+	Latitude       string `json:"Latitude"`
+	Longitude      string `json:"Longitude"`
+	Co             string `json:"Co"`
+	H              string `json:"H"`
+	No2            string `json:"No2"`
+	O3             string `json:"O3"`
+	P              string `json:"P"`
+	Pm10           string `json:"Pm10"`
+	Pm25           string `json:"Pm25"`
+	So2            string `json:"So2"`
+	T              string `json:"T"`
+	W              string `json:"W"`
+	S              string `json:"S"`
+	Tz             string `json:"TZ"`
+	V              int    `json:"V"`
 }

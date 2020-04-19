@@ -5,24 +5,36 @@ package graph
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"gql/airclt"
 	"gql/graph/generated"
 	"gql/graph/model"
-	"math/rand"
+
+	log "github.com/sirupsen/logrus"
 )
 
-func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	todo := &model.Todo{
-		Text: input.Text,
-		ID:   fmt.Sprintf("T%d", rand.Int()),
-		User: &model.User{ID: input.UserID, Name: "user " + input.UserID},
-	}
-	r.todos = append(r.todos, todo)
-	return todo, nil
+func (r *mutationResolver) Save(ctx context.Context, input model.NewAirQuality) (*model.AirQuality, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	return r.todos, nil
+func (r *queryResolver) AirQuality(ctx context.Context, city string) (*model.AirQuality, error) {
+	var air model.AirQuality
+	buf, err := airclt.AirOfCity(ctx, city)
+	if err != nil {
+		log.Error(err.Error())
+		return &air, err
+	}
+	if err = json.Unmarshal(buf, &air); err != nil {
+		log.WithField("from", "air-service").Errorf("%s", buf)
+		log.Error(err.Error())
+		return &air, err
+	}
+	return &air, nil
+}
+
+func (r *queryResolver) AirQualityHistory(ctx context.Context, city string) ([]*model.AirQuality, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 // Mutation returns generated.MutationResolver implementation.

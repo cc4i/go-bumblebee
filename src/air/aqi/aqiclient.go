@@ -27,68 +27,68 @@ type ApiError struct {
 }
 
 type AirQuality struct {
-	IndexCityVHash string `json:"index_city_v_hash"`
-	IndexCity      string `json:"index_city"`
-	StationIndex   int    `json:"idx"`
-	AQI            int    `json:"aqi"`
-	City           string `json:"city"`
-	CityCN         string `json:"city_cn"`
-	Latitude       string `json:"lat"`
-	Longitude      string `json:"lng"`
-	Co             string `json:"co"`
-	H              string `json:"h"`
-	No2            string `json:"no2"`
-	O3             string `json:"o3"`
-	P              string `json:"p"`
-	Pm10           string `json:"pm10"`
-	Pm25           string `json:"pm25"`
-	So2            string `json:"so2"`
-	T              string `json:"t"`
-	W              string `json:"w"`
-	S              string `json:"s"`  //Local measurement time
-	TZ             string `json:"tz"` //Station timezone
-	V              int    `json:"v"`
+	IndexCityVHash string `json:"IndexCityVHash"`
+	IndexCity      string `json:"IndexCity"`
+	StationIndex   int    `json:"StationIndex"`
+	AQI            int    `json:"AQI"`
+	City           string `json:"City"`
+	CityCN         string `json:"CityCN"`
+	Latitude       string `json:"Latitude"`
+	Longitude      string `json:"Longitude"`
+	Co             string `json:"Co"`
+	H              string `json:"H"`
+	No2            string `json:"No2"`
+	O3             string `json:"O3"`
+	P              string `json:"P"`
+	Pm10           string `json:"Pm10"`
+	Pm25           string `json:"Pm25"`
+	So2            string `json:"So2"`
+	T              string `json:"T"`
+	W              string `json:"W"`
+	S              string `json:"S"`  //Local measurement time
+	TZ             string `json:"TZ"` //Station timezone
+	V              int    `json:"V"`
 }
 
 type OriginAirQuality struct {
-	Status string     `json:"status"`
-	Data   OriginData `json:"data"`
+	Status string     `json:"Status"`
+	Data   OriginData `json:"Data"`
 }
 
 type OriginData struct {
-	AQI          int        `json:"aqi"`
-	StationIndex int        `json:"idx"`
-	City         OriginCity `json:"city"`
-	IAQI         OriginIAQI `json:"iaqi"`
-	OriginTime   OriginTime `json:"time"`
+	AQI          int        `json:"AQI"`
+	StationIndex int        `json:"StationIndex"`
+	City         OriginCity `json:"City"`
+	IAQI         OriginIAQI `json:"IAQI"`
+	OriginTime   OriginTime `json:"OriginTime"`
 }
 
 type OriginCity struct {
-	Geo  []float64 `json:"geo"`
-	Name string    `json:"name"`
+	Geo  []float64 `json:"Geo"`
+	Name string    `json:"Name"`
 }
 
 type OriginIAQI struct {
-	Co   OValue `json:"co"`
-	H    OValue `json:"h"`
-	No2  OValue `json:"no2"`
-	O3   OValue `json:"o3"`
-	P    OValue `json:"p"`
-	Pm10 OValue `json:"pm10"`
-	Pm25 OValue `json:"pm25"`
-	So2  OValue `json:"so2"`
-	T    OValue `json:"t"`
-	W    OValue `json:"w"`
+	Co   OValue `json:"Co"`
+	H    OValue `json:"H"`
+	No2  OValue `json:"No2"`
+	O3   OValue `json:"O3"`
+	P    OValue `json:"P"`
+	Pm10 OValue `json:"Pm10"`
+	Pm25 OValue `json:"Pm25"`
+	So2  OValue `json:"So2"`
+	T    OValue `json:"T"`
+	W    OValue `json:"W"`
 }
 
 type OValue struct {
-	V float64 `json:"v"`
+	V float64 `json:"V"`
 }
 
 type OriginTime struct {
-	S  string `json:"s"`  //Local measurement time
-	TZ string `json:"tz"` //Station timezone
-	V  int    `json:"v"`
+	S  string `json:"S"`  //Local measurement time
+	TZ string `json:"TZ"` //Station timezone
+	V  int    `json:"V"`
 }
 
 func init() {
