@@ -5,7 +5,6 @@ package graph
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"gql/airclt"
 	"gql/graph/generated"
@@ -14,26 +13,21 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (r *mutationResolver) Save(ctx context.Context, input model.NewAirQuality) (*model.AirQuality, error) {
+func (r *mutationResolver) SaveQueryHistory(ctx context.Context, input model.NewQuery) (*model.QueryHistory, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
 func (r *queryResolver) AirQuality(ctx context.Context, city string) (*model.AirQuality, error) {
-	var air model.AirQuality
-	buf, err := airclt.AirOfCity(ctx, city)
+	air, err := airclt.AirOfCity(ctx, city)
 	if err != nil {
-		log.Error(err.Error())
-		return &air, err
+		log.WithField("from", "air-service").Error(err)
+		return air, err
 	}
-	if err = json.Unmarshal(buf, &air); err != nil {
-		log.WithField("from", "air-service").Errorf("%s", buf)
-		log.Error(err.Error())
-		return &air, err
-	}
-	return &air, nil
+
+	return air, nil
 }
 
-func (r *queryResolver) AirQualityHistory(ctx context.Context, city string) ([]*model.AirQuality, error) {
+func (r *queryResolver) QueryHistory(ctx context.Context, city string) ([]*model.QueryHistory, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 

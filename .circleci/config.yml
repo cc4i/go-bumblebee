@@ -104,7 +104,7 @@ jobs:
   build-bee:
     docker:
       # specify the version
-      - image: circleci/node:13.12-browsers
+      - image: circleci/node:12.16.2-browsers
 
     working_directory: ~/go-bumblebee
     steps:

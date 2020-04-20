@@ -67,28 +67,31 @@ type ComplexityRoot struct {
 		W              func(childComplexity int) int
 	}
 
-	AirQualityHistory struct {
-		AirQuality func(childComplexity int) int
-		Created    func(childComplexity int) int
-		ID         func(childComplexity int) int
-	}
-
 	Mutation struct {
-		Save func(childComplexity int, input model.NewAirQuality) int
+		SaveQueryHistory func(childComplexity int, input model.NewQuery) int
 	}
 
 	Query struct {
-		AirQuality        func(childComplexity int, city string) int
-		AirQualityHistory func(childComplexity int, city string) int
+		AirQuality   func(childComplexity int, city string) int
+		QueryHistory func(childComplexity int, city string) int
+	}
+
+	QueryHistory struct {
+		Content       func(childComplexity int) int
+		Created       func(childComplexity int) int
+		Device        func(childComplexity int) int
+		ID            func(childComplexity int) int
+		RemoteAddress func(childComplexity int) int
+		Token         func(childComplexity int) int
 	}
 }
 
 type MutationResolver interface {
-	Save(ctx context.Context, input model.NewAirQuality) (*model.AirQuality, error)
+	SaveQueryHistory(ctx context.Context, input model.NewQuery) (*model.QueryHistory, error)
 }
 type QueryResolver interface {
 	AirQuality(ctx context.Context, city string) (*model.AirQuality, error)
-	AirQualityHistory(ctx context.Context, city string) ([]*model.AirQuality, error)
+	QueryHistory(ctx context.Context, city string) ([]*model.QueryHistory, error)
 }
 
 type executableSchema struct {
@@ -232,7 +235,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AirQuality.T(childComplexity), true
 
-	case "AirQuality.TZ":
+	case "AirQuality.Tz":
 		if e.complexity.AirQuality.Tz == nil {
 			break
 		}
@@ -253,38 +256,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AirQuality.W(childComplexity), true
 
-	case "AirQualityHistory.airQuality":
-		if e.complexity.AirQualityHistory.AirQuality == nil {
+	case "Mutation.saveQueryHistory":
+		if e.complexity.Mutation.SaveQueryHistory == nil {
 			break
 		}
 
-		return e.complexity.AirQualityHistory.AirQuality(childComplexity), true
-
-	case "AirQualityHistory.created":
-		if e.complexity.AirQualityHistory.Created == nil {
-			break
-		}
-
-		return e.complexity.AirQualityHistory.Created(childComplexity), true
-
-	case "AirQualityHistory.id":
-		if e.complexity.AirQualityHistory.ID == nil {
-			break
-		}
-
-		return e.complexity.AirQualityHistory.ID(childComplexity), true
-
-	case "Mutation.save":
-		if e.complexity.Mutation.Save == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_save_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_saveQueryHistory_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.Save(childComplexity, args["input"].(model.NewAirQuality)), true
+		return e.complexity.Mutation.SaveQueryHistory(childComplexity, args["input"].(model.NewQuery)), true
 
 	case "Query.airQuality":
 		if e.complexity.Query.AirQuality == nil {
@@ -298,17 +280,59 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.AirQuality(childComplexity, args["city"].(string)), true
 
-	case "Query.airQualityHistory":
-		if e.complexity.Query.AirQualityHistory == nil {
+	case "Query.queryHistory":
+		if e.complexity.Query.QueryHistory == nil {
 			break
 		}
 
-		args, err := ec.field_Query_airQualityHistory_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_queryHistory_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.AirQualityHistory(childComplexity, args["city"].(string)), true
+		return e.complexity.Query.QueryHistory(childComplexity, args["city"].(string)), true
+
+	case "QueryHistory.content":
+		if e.complexity.QueryHistory.Content == nil {
+			break
+		}
+
+		return e.complexity.QueryHistory.Content(childComplexity), true
+
+	case "QueryHistory.created":
+		if e.complexity.QueryHistory.Created == nil {
+			break
+		}
+
+		return e.complexity.QueryHistory.Created(childComplexity), true
+
+	case "QueryHistory.device":
+		if e.complexity.QueryHistory.Device == nil {
+			break
+		}
+
+		return e.complexity.QueryHistory.Device(childComplexity), true
+
+	case "QueryHistory.id":
+		if e.complexity.QueryHistory.ID == nil {
+			break
+		}
+
+		return e.complexity.QueryHistory.ID(childComplexity), true
+
+	case "QueryHistory.remoteAddress":
+		if e.complexity.QueryHistory.RemoteAddress == nil {
+			break
+		}
+
+		return e.complexity.QueryHistory.RemoteAddress(childComplexity), true
+
+	case "QueryHistory.token":
+		if e.complexity.QueryHistory.Token == nil {
+			break
+		}
+
+		return e.complexity.QueryHistory.Token(childComplexity), true
 
 	}
 	return 0, false
@@ -397,50 +421,36 @@ type AirQuality {
   T:              String!
   W:              String!
   S:              String!
-  TZ:             String!
+  Tz:             String!
   V:              Int!
 }
 
-type AirQualityHistory {
+type QueryHistory {
 
   id: ID!  
   created: Int!
-  airQuality: AirQuality!
+  content: AirQuality!
+  remoteAddress: String
+  device: String
+  token: String
 
 }
 
 
 type Query {
   airQuality(city: String!): AirQuality!
-  airQualityHistory(city: String!): [AirQuality!]!
+  queryHistory(city: String!): [QueryHistory!]!
 }
 
-input NewAirQuality {
-    IndexCityVHash: String!
-    IndexCity:      String!
-    StationIndex:   String!
-    AQI:            String!
-    City:           String!
-    CityCN:        String!
-    Latitude:       String!
-    Longitude:     String!
-    Co:             String!
-    H:             String!
-    No2:            String!
-    O3:             String!
-    P:              String!
-    Pm10:           String!
-    Pm25:           String!
-    So2:            String!
-    T:              String!
-    W:              String!
-    S:              String!
-    TZ:             String!
-    V:              Int!
+input NewQuery {
+  created: Int!
+  remoteAddress: String
+  device: String
+  token: String
 }
 
 type Mutation {
-  save(input: NewAirQuality!): AirQuality!
+  saveQueryHistory(input: NewQuery!): QueryHistory!
 }
 
 `, BuiltIn: false},
@@ -451,12 +461,12 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
 // region    ***************************** args.gotpl *****************************
 
-func (ec *executionContext) field_Mutation_save_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_saveQueryHistory_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.NewAirQuality
+	var arg0 model.NewQuery
 	if tmp, ok := rawArgs["input"]; ok {
-		arg0, err = ec.unmarshalNNewAirQuality2gqlᚋgraphᚋmodelᚐNewAirQuality(ctx, tmp)
+		arg0, err = ec.unmarshalNNewQuery2gqlᚋgraphᚋmodelᚐNewQuery(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -479,7 +489,7 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_airQualityHistory_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_airQuality_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -493,7 +503,7 @@ func (ec *executionContext) field_Query_airQualityHistory_args(ctx context.Conte
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_airQuality_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_queryHistory_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -1189,7 +1199,7 @@ func (ec *executionContext) _AirQuality_S(ctx context.Context, field graphql.Col
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _AirQuality_TZ(ctx context.Context, field graphql.CollectedField, obj *model.AirQuality) (ret graphql.Marshaler) {
+func (ec *executionContext) _AirQuality_Tz(ctx context.Context, field graphql.CollectedField, obj *model.AirQuality) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1257,109 +1267,7 @@ func (ec *executionContext) _AirQuality_V(ctx context.Context, field graphql.Col
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _AirQualityHistory_id(ctx context.Context, field graphql.CollectedField, obj *model.AirQualityHistory) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:   "AirQualityHistory",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _AirQualityHistory_created(ctx context.Context, field graphql.CollectedField, obj *model.AirQualityHistory) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:   "AirQualityHistory",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Created, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _AirQualityHistory_airQuality(ctx context.Context, field graphql.CollectedField, obj *model.AirQualityHistory) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:   "AirQualityHistory",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.AirQuality, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*model.AirQuality)
-	fc.Result = res
-	return ec.marshalNAirQuality2ᚖgqlᚋgraphᚋmodelᚐAirQuality(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Mutation_save(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_saveQueryHistory(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1375,7 +1283,7 @@ func (ec *executionContext) _Mutation_save(ctx context.Context, field graphql.Co
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_save_args(ctx, rawArgs)
+	args, err := ec.field_Mutation_saveQueryHistory_args(ctx, rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
@@ -1383,7 +1291,7 @@ func (ec *executionContext) _Mutation_save(ctx context.Context, field graphql.Co
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().Save(rctx, args["input"].(model.NewAirQuality))
+		return ec.resolvers.Mutation().SaveQueryHistory(rctx, args["input"].(model.NewQuery))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1395,9 +1303,9 @@ func (ec *executionContext) _Mutation_save(ctx context.Context, field graphql.Co
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.AirQuality)
+	res := resTmp.(*model.QueryHistory)
 	fc.Result = res
-	return ec.marshalNAirQuality2ᚖgqlᚋgraphᚋmodelᚐAirQuality(ctx, field.Selections, res)
+	return ec.marshalNQueryHistory2ᚖgqlᚋgraphᚋmodelᚐQueryHistory(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_airQuality(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1441,7 +1349,7 @@ func (ec *executionContext) _Query_airQuality(ctx context.Context, field graphql
 	return ec.marshalNAirQuality2ᚖgqlᚋgraphᚋmodelᚐAirQuality(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Query_airQualityHistory(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_queryHistory(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1457,7 +1365,7 @@ func (ec *executionContext) _Query_airQualityHistory(ctx context.Context, field 
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_airQualityHistory_args(ctx, rawArgs)
+	args, err := ec.field_Query_queryHistory_args(ctx, rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
@@ -1465,7 +1373,7 @@ func (ec *executionContext) _Query_airQualityHistory(ctx context.Context, field 
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().AirQualityHistory(rctx, args["city"].(string))
+		return ec.resolvers.Query().QueryHistory(rctx, args["city"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1477,9 +1385,9 @@ func (ec *executionContext) _Query_airQualityHistory(ctx context.Context, field 
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*model.AirQuality)
+	res := resTmp.([]*model.QueryHistory)
 	fc.Result = res
-	return ec.marshalNAirQuality2ᚕᚖgqlᚋgraphᚋmodelᚐAirQualityᚄ(ctx, field.Selections, res)
+	return ec.marshalNQueryHistory2ᚕᚖgqlᚋgraphᚋmodelᚐQueryHistoryᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1549,6 +1457,201 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	res := resTmp.(*introspection.Schema)
 	fc.Result = res
 	return ec.marshalO__Schema2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐSchema(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _QueryHistory_id(ctx context.Context, field graphql.CollectedField, obj *model.QueryHistory) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "QueryHistory",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _QueryHistory_created(ctx context.Context, field graphql.CollectedField, obj *model.QueryHistory) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "QueryHistory",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Created, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _QueryHistory_content(ctx context.Context, field graphql.CollectedField, obj *model.QueryHistory) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "QueryHistory",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Content, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.AirQuality)
+	fc.Result = res
+	return ec.marshalNAirQuality2ᚖgqlᚋgraphᚋmodelᚐAirQuality(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _QueryHistory_remoteAddress(ctx context.Context, field graphql.CollectedField, obj *model.QueryHistory) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "QueryHistory",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RemoteAddress, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _QueryHistory_device(ctx context.Context, field graphql.CollectedField, obj *model.QueryHistory) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "QueryHistory",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Device, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _QueryHistory_token(ctx context.Context, field graphql.CollectedField, obj *model.QueryHistory) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "QueryHistory",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Token, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
@@ -2606,135 +2709,33 @@ func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.Co
 
 // region    **************************** input.gotpl *****************************
 
-func (ec *executionContext) unmarshalInputNewAirQuality(ctx context.Context, obj interface{}) (model.NewAirQuality, error) {
-	var it model.NewAirQuality
+func (ec *executionContext) unmarshalInputNewQuery(ctx context.Context, obj interface{}) (model.NewQuery, error) {
+	var it model.NewQuery
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
 		switch k {
-		case "IndexCityVHash":
+		case "created":
 			var err error
-			it.IndexCityVHash, err = ec.unmarshalNString2string(ctx, v)
+			it.Created, err = ec.unmarshalNInt2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "IndexCity":
+		case "remoteAddress":
 			var err error
-			it.IndexCity, err = ec.unmarshalNString2string(ctx, v)
+			it.RemoteAddress, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "StationIndex":
+		case "device":
 			var err error
-			it.StationIndex, err = ec.unmarshalNString2string(ctx, v)
+			it.Device, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "AQI":
+		case "token":
 			var err error
-			it.Aqi, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "City":
-			var err error
-			it.City, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "CityCN":
-			var err error
-			it.CityCn, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Latitude":
-			var err error
-			it.Latitude, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Longitude":
-			var err error
-			it.Longitude, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Co":
-			var err error
-			it.Co, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "H":
-			var err error
-			it.H, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "No2":
-			var err error
-			it.No2, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "O3":
-			var err error
-			it.O3, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "P":
-			var err error
-			it.P, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Pm10":
-			var err error
-			it.Pm10, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Pm25":
-			var err error
-			it.Pm25, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "So2":
-			var err error
-			it.So2, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "T":
-			var err error
-			it.T, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "W":
-			var err error
-			it.W, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "S":
-			var err error
-			it.S, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "TZ":
-			var err error
-			it.Tz, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "V":
-			var err error
-			it.V, err = ec.unmarshalNInt2int(ctx, v)
+			it.Token, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -2858,50 +2859,13 @@ func (ec *executionContext) _AirQuality(ctx context.Context, sel ast.SelectionSe
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "TZ":
-			out.Values[i] = ec._AirQuality_TZ(ctx, field, obj)
+		case "Tz":
+			out.Values[i] = ec._AirQuality_Tz(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
 		case "V":
 			out.Values[i] = ec._AirQuality_V(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var airQualityHistoryImplementors = []string{"AirQualityHistory"}
-
-func (ec *executionContext) _AirQualityHistory(ctx context.Context, sel ast.SelectionSet, obj *model.AirQualityHistory) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, airQualityHistoryImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("AirQualityHistory")
-		case "id":
-			out.Values[i] = ec._AirQualityHistory_id(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "created":
-			out.Values[i] = ec._AirQualityHistory_created(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "airQuality":
-			out.Values[i] = ec._AirQualityHistory_airQuality(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -2931,8 +2895,8 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Mutation")
-		case "save":
-			out.Values[i] = ec._Mutation_save(ctx, field)
+		case "saveQueryHistory":
+			out.Values[i] = ec._Mutation_saveQueryHistory(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -2976,7 +2940,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				}
 				return res
 			})
-		case "airQualityHistory":
+		case "queryHistory":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
 				defer func() {
@@ -2984,7 +2948,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_airQualityHistory(ctx, field)
+				res = ec._Query_queryHistory(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -2994,6 +2958,49 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Values[i] = ec._Query___type(ctx, field)
 		case "__schema":
 			out.Values[i] = ec._Query___schema(ctx, field)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var queryHistoryImplementors = []string{"QueryHistory"}
+
+func (ec *executionContext) _QueryHistory(ctx context.Context, sel ast.SelectionSet, obj *model.QueryHistory) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, queryHistoryImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("QueryHistory")
+		case "id":
+			out.Values[i] = ec._QueryHistory_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "created":
+			out.Values[i] = ec._QueryHistory_created(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "content":
+			out.Values[i] = ec._QueryHistory_content(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "remoteAddress":
+			out.Values[i] = ec._QueryHistory_remoteAddress(ctx, field, obj)
+		case "device":
+			out.Values[i] = ec._QueryHistory_device(ctx, field, obj)
+		case "token":
+			out.Values[i] = ec._QueryHistory_token(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3254,43 +3261,6 @@ func (ec *executionContext) marshalNAirQuality2gqlᚋgraphᚋmodelᚐAirQuality(
 	return ec._AirQuality(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNAirQuality2ᚕᚖgqlᚋgraphᚋmodelᚐAirQualityᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.AirQuality) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalNAirQuality2ᚖgqlᚋgraphᚋmodelᚐAirQuality(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-	return ret
-}
-
 func (ec *executionContext) marshalNAirQuality2ᚖgqlᚋgraphᚋmodelᚐAirQuality(ctx context.Context, sel ast.SelectionSet, v *model.AirQuality) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -3343,8 +3313,59 @@ func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.Selecti
 	return res
 }
 
-func (ec *executionContext) unmarshalNNewAirQuality2gqlᚋgraphᚋmodelᚐNewAirQuality(ctx context.Context, v interface{}) (model.NewAirQuality, error) {
-	return ec.unmarshalInputNewAirQuality(ctx, v)
+func (ec *executionContext) unmarshalNNewQuery2gqlᚋgraphᚋmodelᚐNewQuery(ctx context.Context, v interface{}) (model.NewQuery, error) {
+	return ec.unmarshalInputNewQuery(ctx, v)
+}
+
+func (ec *executionContext) marshalNQueryHistory2gqlᚋgraphᚋmodelᚐQueryHistory(ctx context.Context, sel ast.SelectionSet, v model.QueryHistory) graphql.Marshaler {
+	return ec._QueryHistory(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNQueryHistory2ᚕᚖgqlᚋgraphᚋmodelᚐQueryHistoryᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.QueryHistory) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNQueryHistory2ᚖgqlᚋgraphᚋmodelᚐQueryHistory(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalNQueryHistory2ᚖgqlᚋgraphᚋmodelᚐQueryHistory(ctx context.Context, sel ast.SelectionSet, v *model.QueryHistory) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._QueryHistory(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {

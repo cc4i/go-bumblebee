@@ -22,36 +22,22 @@ type AirQuality struct {
 	T              string `json:"T"`
 	W              string `json:"W"`
 	S              string `json:"S"`
-	Tz             string `json:"TZ"`
+	Tz             string `json:"Tz"`
 	V              int    `json:"V"`
 }
 
-type AirQualityHistory struct {
-	ID         string      `json:"id"`
-	Created    int         `json:"created"`
-	AirQuality *AirQuality `json:"airQuality"`
+type NewQuery struct {
+	Created       int     `json:"created"`
+	RemoteAddress *string `json:"remoteAddress"`
+	Device        *string `json:"device"`
+	Token         *string `json:"token"`
 }
 
-type NewAirQuality struct {
-	IndexCityVHash string `json:"IndexCityVHash"`
-	IndexCity      string `json:"IndexCity"`
-	StationIndex   string `json:"StationIndex"`
-	Aqi            string `json:"AQI"`
-	City           string `json:"City"`
-	CityCn         string `json:"CityCN"`
-	Latitude       string `json:"Latitude"`
-	Longitude      string `json:"Longitude"`
-	Co             string `json:"Co"`
-	H              string `json:"H"`
-	No2            string `json:"No2"`
-	O3             string `json:"O3"`
-	P              string `json:"P"`
-	Pm10           string `json:"Pm10"`
-	Pm25           string `json:"Pm25"`
-	So2            string `json:"So2"`
-	T              string `json:"T"`
-	W              string `json:"W"`
-	S              string `json:"S"`
-	Tz             string `json:"TZ"`
-	V              int    `json:"V"`
+type QueryHistory struct {
+	ID            string      `json:"id"`
+	Created       int         `json:"created"`
+	Content       *AirQuality `json:"content"`
+	RemoteAddress *string     `json:"remoteAddress"`
+	Device        *string     `json:"device"`
+	Token         *string     `json:"token"`
 }

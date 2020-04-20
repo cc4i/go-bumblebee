@@ -21,49 +21,35 @@ type AirQuality {
   T:              String!
   W:              String!
   S:              String!
-  TZ:             String!
+  Tz:             String!
   V:              Int!
 }
 
-type AirQualityHistory {
+type QueryHistory {
 
   id: ID!  
   created: Int!
-  airQuality: AirQuality!
+  content: AirQuality!
+  remoteAddress: String
+  device: String
+  token: String
 
 }
 
 
 type Query {
   airQuality(city: String!): AirQuality!
-  airQualityHistory(city: String!): [AirQuality!]!
+  queryHistory(city: String!): [QueryHistory!]!
 }
 
-input NewAirQuality {
-    IndexCityVHash: String!
-    IndexCity:      String!
-    StationIndex:   String!
-    AQI:            String!
-    City:           String!
-    CityCN:        String!
-    Latitude:       String!
-    Longitude:     String!
-    Co:             String!
-    H:             String!
-    No2:            String!
-    O3:             String!
-    P:              String!
-    Pm10:           String!
-    Pm25:           String!
-    So2:            String!
-    T:              String!
-    W:              String!
-    S:              String!
-    TZ:             String!
-    V:              Int!
+input NewQuery {
+  created: Int!
+  remoteAddress: String
+  device: String
+  token: String
 }
 
 type Mutation {
-  save(input: NewAirQuality!): AirQuality!
+  saveQueryHistory(input: NewQuery!): QueryHistory!
 }
 

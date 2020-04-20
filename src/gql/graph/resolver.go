@@ -7,5 +7,5 @@ import "gql/graph/model"
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
-	AirHistory []model.AirQualityHistory
+	QueryHistory []model.QueryHistory
 }
