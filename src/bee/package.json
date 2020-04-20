@@ -45,5 +45,9 @@
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "~3.8.3"
-  }
+  },
+  
+  "postinstall": "ngcc --properties es2015 browser module main --async false"
+  
+
 }
