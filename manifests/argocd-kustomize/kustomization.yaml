@@ -3,9 +3,10 @@
 #kind: Kustomization
 
 # namespace to deploy all resources to
-# namespace: go-bumblebee
+namespace: go-bumblebee
 
 resources:
+- ns.yaml
 - gate
 - air
 - spy
