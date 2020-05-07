@@ -6,7 +6,7 @@ kind: Kustomization
 # list of resource config to be applied
 resources:
 - gate-deployment.yaml
-- gate-service.yaml
+- gate-service-external.yaml
 # - gate-service-external.yaml
 
 # # namespace to deploy all resources to
