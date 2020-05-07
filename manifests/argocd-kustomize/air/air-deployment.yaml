@@ -15,7 +15,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: air-go-bumblebee
-        image:  herochinese/go-bumblebee-air:master
+        image:  herochinese/go-bumblebee-air:front-end-site-v1
         ports:
           - name: http
             containerPort: 9011
