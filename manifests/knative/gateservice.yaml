@@ -1,0 +1,20 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: gate-service
+  namespace: default
+spec:
+  template:
+    spec:
+      containers:
+        - image: herochinese/go-bumblebee-gate:front-end-site-v1
+          env:
+            - name: AIR_SERVICE_ENDPOINT
+              value: airservice:9011
+            - name: SPY_SERVICE_ENDPOINT
+              value: spyservice:9041
+          ports:
+            # - name: h2c
+            #   containerPort: 9010
+            - name: h2c
+              containerPort: 9040

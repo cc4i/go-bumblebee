@@ -37,8 +37,8 @@ type MyNamespace struct {
 	Labels  []Label   `json:"labels"`
 }
 
-type MyDeploymentPods struct {}
-type MyServicePods struct {}
+type MyDeploymentPods struct{}
+type MyServicePods struct{}
 
 type K8sClient interface {
 	GetNamespaces() ([]MyNamespace, error)
@@ -50,7 +50,6 @@ type K8sClient interface {
 
 func (cs *K8sContext) GetAllServicesPods(namespace string) ([]MyServicePods, error) {
 	servicePods := []MyServicePods{}
-
 
 	return servicePods, nil
 }

@@ -19,9 +19,7 @@ jobs:
             which go
             echo $PATH
             cd /go/src/github.com/cc4i/go-bumblebee/src/gate
-            ls -F
-            go get -v -d
-            go test -v -cover ./...
+            make test
 
   build-gate-image:
     machine: true
@@ -106,7 +104,7 @@ jobs:
   build-bee:
     docker:
       # specify the version
-      - image: circleci/node:13.12-browsers
+      - image: circleci/node:12.16.2-browsers
 
     working_directory: ~/go-bumblebee
     steps:
@@ -119,6 +117,7 @@ jobs:
             cd ~/go-bumblebee/src/bee
             npm install 
             npm install @angular/cli@9.1.1
+            npm run ngcc
             export PATH=~/go-bumblebee/src/bee/node_modules/@angular/cli/bin:$PATH
             ng test --watch=false
 

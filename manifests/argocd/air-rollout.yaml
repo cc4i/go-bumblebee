@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Deployment 
+metadata:
+  name: airservice
+spec:
+  replicas: 3
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: airservice 
+  template:
+    metadata:
+      labels: 
+        app: airservice 
+    spec:
+      terminationGracePeriodSeconds: 5
+      containers:
+      - name: air-go-bumblebee
+        image:  herochinese/go-bumblebee-air:master
+        ports:
+          - name: http
+            containerPort: 9011
+        resources:
+          requests: 
+            cpu: 100m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi
+  strategy:
+    blueGreen:
+      activeService: rollout-bluegreen-active
+      previewService: rollout-bluegreen-preview
+      autoPromotionEnabled: false
+      

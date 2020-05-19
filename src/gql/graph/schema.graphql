@@ -1,0 +1,55 @@
+# GraphQL schema
+
+
+type AirQuality {
+  IndexCityVHash: String!
+  IndexCity:      String!
+  StationIndex:   Int!
+  AQI:            Int!
+  City:           String!
+  CityCN:        String!
+  Latitude:       String!
+  Longitude:     String!
+  Co:             String!
+  H:             String!
+  No2:            String!
+  O3:             String!
+  P:              String!
+  Pm10:           String!
+  Pm25:           String!
+  So2:            String!
+  T:              String!
+  W:              String!
+  S:              String!
+  Tz:             String!
+  V:              Int!
+}
+
+type QueryHistory {
+
+  id: ID!  
+  created: Int!
+  content: AirQuality!
+  remoteAddress: String
+  device: String
+  token: String
+
+}
+
+
+type Query {
+  airQuality(city: String!): AirQuality!
+  queryHistory(city: String!): [QueryHistory!]!
+}
+
+input NewQuery {
+  created: Int!
+  remoteAddress: String
+  device: String
+  token: String
+}
+
+type Mutation {
+  saveQueryHistory(input: NewQuery!): QueryHistory!
+}
+

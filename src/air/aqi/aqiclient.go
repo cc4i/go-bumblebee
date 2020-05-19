@@ -18,8 +18,31 @@ type HttpClient interface {
 }
 
 var (
-	Client HttpClient
+	Client             HttpClient
+	AQIServer          = "https://api.waqi.info"
+	AQIServerToken     = "b0e78ca32d058a9170b6907c5214c0e946534cc9"
+	IpStackServer      = "http://api.ipstack.com"
+	IpStackServerToken = "ad7c6834f8dba51e8943d96d3742fcc5"
+
+	//api.ipstack.com/127.0.0.1?access_key=ad7c6834f8dba51e8943d96d3742fcc5
+	//https://ipapi.co/json
+	//https://ipapi.co/8.8.8.8/json
 )
+
+type IpStack struct {
+	Ip            string  `json:"ip"`
+	Type          string  `json:"type"`
+	ContinentCode string  `json:"continent_code"`
+	ContinentName string  `json:"continent_name"`
+	CountryCode   string  `json:"country_code"`
+	CountryName   string  `json:"country_name"`
+	RegionCode    string  `json:"region_code"`
+	RegionName    string  `json:"region_name"`
+	City          string  `json:"city"`
+	Cip           string  `json:"zip"`
+	Latitude      float64 `json:"latitude"`
+	Longitude     float64 `json:"longitude"`
+}
 
 type ApiError struct {
 	Status string `json:"status"`
@@ -51,44 +74,44 @@ type AirQuality struct {
 }
 
 type OriginAirQuality struct {
-	Status string     `json:"status"`
-	Data   OriginData `json:"data"`
+	Status string     `json:"Status"`
+	Data   OriginData `json:"Data"`
 }
 
 type OriginData struct {
-	AQI          int        `json:"aqi"`
-	StationIndex int        `json:"idx"`
-	City         OriginCity `json:"city"`
-	IAQI         OriginIAQI `json:"iaqi"`
-	OriginTime   OriginTime `json:"time"`
+	AQI          int        `json:"AQIServer"`
+	StationIndex int        `json:"StationIndex"`
+	City         OriginCity `json:"City"`
+	IAQI         OriginIAQI `json:"IAQI"`
+	OriginTime   OriginTime `json:"OriginTime"`
 }
 
 type OriginCity struct {
-	Geo  []float64 `json:"geo"`
-	Name string    `json:"name"`
+	Geo  []float64 `json:"Geo"`
+	Name string    `json:"Name"`
 }
 
 type OriginIAQI struct {
-	Co   OValue `json:"co"`
-	H    OValue `json:"h"`
-	No2  OValue `json:"no2"`
-	O3   OValue `json:"o3"`
-	P    OValue `json:"p"`
-	Pm10 OValue `json:"pm10"`
-	Pm25 OValue `json:"pm25"`
-	So2  OValue `json:"so2"`
-	T    OValue `json:"t"`
-	W    OValue `json:"w"`
+	Co   OValue `json:"Co"`
+	H    OValue `json:"H"`
+	No2  OValue `json:"No2"`
+	O3   OValue `json:"O3"`
+	P    OValue `json:"P"`
+	Pm10 OValue `json:"Pm10"`
+	Pm25 OValue `json:"Pm25"`
+	So2  OValue `json:"So2"`
+	T    OValue `json:"T"`
+	W    OValue `json:"W"`
 }
 
 type OValue struct {
-	V float64 `json:"v"`
+	V float64 `json:"V"`
 }
 
 type OriginTime struct {
-	S  string `json:"s"`  //Local measurement time
-	TZ string `json:"tz"` //Station timezone
-	V  int    `json:"v"`
+	S  string `json:"S"`  //Local measurement time
+	TZ string `json:"TZ"` //Station timezone
+	V  int    `json:"V"`
 }
 
 func init() {
@@ -145,20 +168,68 @@ func Copy2AirQuality(src OriginAirQuality) AirQuality {
 	return dest
 }
 
+func AirOfGeo(c *gin.Context) {
+	///air/geo/:lat/:lng ->//feed/geo::lat;:lng/?token=:token
+	//Auckland: -36.916839599609375, 174.70875549316406
+
+	lat := c.Param("lat")
+	lng := c.Param("lng")
+	url := AQIServer + "/feed/geo:" + lat + ";" + lng + "/?token=" + AQIServerToken
+	if buf, err := HttpGet(url); err != nil {
+		log.Error(err)
+		c.JSON(http.StatusInternalServerError, err)
+
+	} else {
+		if air, err := convertAir(buf); err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+		} else {
+			c.JSON(http.StatusOK, air)
+		}
+	}
+
+}
+func AirOfIP(c *gin.Context) {
+	//http://api.ipstack.com/127.0.0.1?access_key=ad7c6834f8dba51e8943d96d3742fcc5
+	var ipStack IpStack
+	ip := c.Param("ip")
+	url := IpStackServer + "/" + ip + "?access_key=" + IpStackServerToken
+	if buf, err := HttpGet(url); err != nil {
+		log.Error(err)
+		c.JSON(http.StatusInternalServerError, err)
+
+	} else {
+		if err = json.Unmarshal(buf, &ipStack); err != nil {
+			log.Error(err)
+			c.JSON(http.StatusInternalServerError, err)
+
+		} else {
+
+			if air, err := byCity(ipStack.City); err != nil {
+				c.JSON(http.StatusInternalServerError, err)
+			} else {
+				c.JSON(http.StatusOK, air)
+			}
+		}
+	}
+}
+
+func byCity(city string) (*AirQuality, error) {
+	// TODO: Making more secure
+	url := AQIServer + "/feed/" + city + "/?token=" + AQIServerToken
+	// ---
+	buf, err := HttpGet(url)
+	if err != nil {
+		log.Errorf("Fail to call AQIServer service from %s", url)
+		return &AirQuality{}, err
+	}
+
+	return convertAir(buf)
+
+}
+
 func AirOfCity(c *gin.Context) {
 	city := c.Param("city")
-
-	// TODO: Making more secure
-	token := "b0e78ca32d058a9170b6907c5214c0e946534cc9"
-	host := "https://api.waqi.info"
-	url := host + "/feed/" + city + "/?token=" + token
-	// ---
-
-	body, err := HttpGet(url)
-	if err != nil {
-		log.Println(err)
-	}
-	air, err := convertAir(body)
+	air, err := byCity(city)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 	} else {
@@ -167,7 +238,7 @@ func AirOfCity(c *gin.Context) {
 
 }
 
-func convertAir(content []byte) (AirQuality, error) {
+func convertAir(content []byte) (*AirQuality, error) {
 	var originAir OriginAirQuality
 	var newAir AirQuality
 	var apiError ApiError
@@ -175,7 +246,7 @@ func convertAir(content []byte) (AirQuality, error) {
 	err := json.Unmarshal(content, &originAir)
 	if err != nil {
 		log.Println(err)
-		return newAir, err
+		return &newAir, err
 	}
 	if originAir.Status == "error" {
 		err = json.Unmarshal(content, &apiError)
@@ -183,12 +254,12 @@ func convertAir(content []byte) (AirQuality, error) {
 			log.Println(err)
 		}
 		log.Printf("Convert data was failed due to <%s>. ", apiError.Data)
-		return newAir, err
+		return &newAir, err
 
 	}
 	newAir = Copy2AirQuality(originAir)
 
-	return newAir, nil
+	return &newAir, nil
 
 }
 

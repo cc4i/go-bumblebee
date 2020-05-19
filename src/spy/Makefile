@@ -1,6 +1,6 @@
 
 # Image URL to use all building/pushing
-IMG ?= gate:latest
+IMG ?= spy:latest
 # Docker Hub username / password
 DOCKER_PASS =
 DOCKER_USER =

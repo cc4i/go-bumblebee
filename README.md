@@ -56,12 +56,26 @@ telnet $HOSTNAME 9050
 ### 1. Go-Bumblebee through CI/CD pipleline
 Build up CI/CD capabilities around Kubernetes, we have so many ecllecnt choices due to in incredibly rich ecosystem. This tutorial will go with free lunch to taste modernized release pipeline.
 
-- GitHub + CircleCI + AgroCD
+- [GitHub + CircleCI + AgroCD](./docs/github-circleci-argocd.md)
+    - [yaml](./docs/github-circleci-argocd.md#yaml)
+    - [kustomized yaml](./docs/github-circleci-argocd.md#kustomized-yaml)
+    - [helm](./docs/github-circleci-argocd.md#helm)
+    - [blue/green deployment](./docs/github-circleci-argocd.md#blue-green-deployment)
+    - [canary deployment](./docs/github-circleci-argocd.md#canary-deployment)
+
 - GitHub + CircleCI + Spinnaker
 
 
 ### 2. Manage traffic with Istio
 Leverage Istio is a great idea for manage traffic, especially Istio 1.5 was evolved a lot. 
+
+- Routing 
+- Fault injection
+- Traffic shifting 
+- Circuit breaking
+- Mirroring
+- Ingress gateway
+
 
 
 ### 3. Improve Observability with Istio
