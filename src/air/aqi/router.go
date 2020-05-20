@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"net/http"
+	"os"
 )
 
 // API routes/path definition
@@ -106,6 +107,14 @@ func Router() *gin.Engine {
 	r.GET("/metrics", func(c *gin.Context) {
 		promhttp.Handler().ServeHTTP(c.Writer, c.Request)
 
+	})
+	// Version from ENV for test purpose
+	r.GET("/version", func(c *gin.Context) {
+		version := os.Getenv("AIR_VERSION")
+		if version == "" {
+			version= "v0.0.0"
+		}
+		c.String(http.StatusOK, version)
 	})
 
 	return r
