@@ -1,0 +1,22 @@
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  name: build-docker-image-from-git-source-task-run
+spec:
+  serviceAccountName: all-service
+  taskRef:
+    name: build-air-from-git
+  params:
+    - name: pathToDockerFile
+      value: Dockerfile
+    - name: pathToContext
+      value: $(resources.inputs.docker-source.path)/src/air #configure: may change according to your source
+  resources:
+    inputs:
+      - name: docker-source
+        resourceRef:
+          name: air-git
+    outputs:
+      - name: builtImage
+        resourceRef:
+          name: air-service
