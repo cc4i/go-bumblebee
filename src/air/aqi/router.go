@@ -1,6 +1,7 @@
 package aqi
 
 import (
+	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"net/http"
@@ -8,13 +9,13 @@ import (
 )
 
 // API routes/path definition
-func Router() *gin.Engine {
+func Router(ctx context.Context) *gin.Engine {
 	r := gin.Default()
 
 	// Get air quality data of given city
 	// Example: ?c="city"
 	r.GET("/air/city/:city", func(c *gin.Context) {
-		AirOfCity(c)
+		AirOfCity(ctx, c)
 	})
 
 	// Get the nearest station close to the user location, based on the IP information.
@@ -22,7 +23,7 @@ func Router() *gin.Engine {
 	// Destination: /feed/here/?token=:token
 	//				api.ipstack.com/:ip?access_key=ad7c6834f8dba51e8943d96d3742fcc5
 	r.GET("/air/ip/:ip", func(c *gin.Context) {
-		AirOfIP(c)
+		AirOfIP(ctx, c)
 	})
 
 	// Get the nearest station close to the user location, based on the IP information.
@@ -30,7 +31,7 @@ func Router() *gin.Engine {
 	//
 	// Destination: /feed/geo::lat;:lng/?token=:token
 	r.GET("/air/geo/:lat/:lng", func(c *gin.Context) {
-		AirOfGeo(c)
+		AirOfGeo(ctx, c)
 	})
 
 	// Get all the stations within a given lat/lng bounds
@@ -112,7 +113,7 @@ func Router() *gin.Engine {
 	r.GET("/version", func(c *gin.Context) {
 		version := os.Getenv("AIR_VERSION")
 		if version == "" {
-			version= "v0.0.0"
+			version = "v0.0.0"
 		}
 		c.String(http.StatusOK, version)
 	})

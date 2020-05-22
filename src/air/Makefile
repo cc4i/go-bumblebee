@@ -10,13 +10,10 @@ DOCKER_USER =
 all:	manager
 
 test:	fmt	vet
-
-	@if [ -f ${HOME}/.kube/config ]; then \
-		echo "";\
-	else\
-		mkdir ${HOME}/.kube;\
-		touch ${HOME}/.kube/config;\
-	fi
+	AQI_SERVER_URL="https://127.0.0.1" \
+	AQI_SERVER_TOKEN="1234567890" \
+	IP_STACK_SERVER_URL="https://127.0.0.1" \
+	IP_STACK_SERVER_TOKEN="1234567890" \
 	go test ./... -v -cover
 
 
@@ -37,7 +34,7 @@ vet:
 
 # Build the docker image
 docker-build: test
-	docker build . -t ${DOCKER_IMAGE}:${DOCKER_TAG
+	docker build . -t ${DOCKER_IMAGE}:${DOCKER_TAG}
 	docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest
 
 # Push the docker image
