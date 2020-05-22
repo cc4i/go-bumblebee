@@ -11,7 +11,6 @@ import (
 	"io"
 )
 
-
 func initJaeger(service string) (opentracing.Tracer, io.Closer) {
 	cfg := &config.Configuration{
 		Sampler: &config.SamplerConfig{

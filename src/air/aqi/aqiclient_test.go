@@ -1,6 +1,7 @@
 package aqi
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/stretchr/testify/assert"
@@ -25,7 +26,7 @@ func TestHttpGet(t *testing.T) {
 		}))
 		defer ts.Close()
 
-		body, err := HttpGet(ts.URL)
+		body, err := HttpGet(context.TODO(), ts.URL)
 		if err != nil {
 			log.Fatal(err)
 		}

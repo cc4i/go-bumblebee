@@ -14,9 +14,9 @@ import (
 )
 
 var (
-	RedisServer string
+	RedisServer         string
 	RedisServerPassword string
-	RedisClient *redis.Client
+	RedisClient         *redis.Client
 )
 
 func init() {
@@ -26,45 +26,51 @@ func init() {
 		log.Error("Initial redis server address was failed.")
 	} else {
 		RedisClient = redis.NewClient(&redis.Options{
-			Addr: RedisServer,
+			Addr:     RedisServer,
 			Password: RedisServerPassword,
 		})
 		pong, err := RedisClient.Ping(context.TODO()).Result()
-		if err!=nil {
+		if err != nil {
 			log.Error(pong, err)
 		}
 	}
 }
-
 
 func CachingAirQuality(ctx context.Context, city string, quality AirQuality) error {
 	span, _ := opentracing.StartSpanFromContext(ctx, "CachingAirQuality")
 	defer span.Finish()
 
 	buf, _ := json.Marshal(&quality)
+	if RedisClient == nil {
+		return errors.New("redis client was nil")
+	}
 	pipeline := RedisClient.Pipeline()
-	pipeline.Set(ctx,"air_quality_cache-"+city, "expired-600s", 600*time.Second)
+	pipeline.Set(ctx, "air_quality_cache-"+city, "expired-600s", 600*time.Second)
 	pipeline.HSet(ctx, "air_quality_cache", city, buf)
 	_, err := pipeline.Exec(ctx)
 
 	return err
 }
 
-func CachedAirQuality(ctx context.Context, city string)(AirQuality, error) {
+func CachedAirQuality(ctx context.Context, city string) (AirQuality, error) {
 	span, _ := opentracing.StartSpanFromContext(ctx, "CachedAirQuality")
 	defer span.Finish()
 
 	var air = AirQuality{}
-	r, err:=RedisClient.Get(ctx,"air_quality_cache-"+city).Result()
+
+	if RedisClient == nil {
+		return air, errors.New("redis client was nil")
+	}
+	r, err := RedisClient.Get(ctx, "air_quality_cache-"+city).Result()
 	log.Infof("air_quality_cache-%s = %s", city, r)
 	if err == nil {
 		buf, err := RedisClient.HGet(ctx, "air_quality_cache", city).Bytes()
 		if err != nil {
 			return air, err
 		}
-		err = json.Unmarshal(buf,&air)
+		err = json.Unmarshal(buf, &air)
 	} else {
-		err = errors.New("Cached Air Quality of "+city+"has been expired.")
+		err = errors.New("Cached Air Quality of " + city + "has been expired.")
 	}
 
 	return air, err
@@ -93,7 +99,6 @@ func AirOfGeo(ctx context.Context, c *gin.Context) {
 	}
 }
 
-
 func byCity(ctx context.Context, city string) (AirQuality, error) {
 
 	url := AQIServer + "/feed/" + city + "/?token=" + AQIServerToken
@@ -109,7 +114,6 @@ func byCity(ctx context.Context, city string) (AirQuality, error) {
 func AirOfCity(ctx context.Context, c *gin.Context) {
 	span, sctx := opentracing.StartSpanFromContext(ctx, "http-AirOfCity")
 	defer span.Finish()
-
 
 	city := c.Param("city")
 

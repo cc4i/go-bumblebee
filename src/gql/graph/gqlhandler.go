@@ -1,6 +1,7 @@
 package graph
 
 import (
+	"context"
 	"github.com/gin-gonic/gin"
 	"gql/graph/generated"
 	"net/http"
@@ -17,7 +18,7 @@ import (
 //
 /// !!!
 
-func Router() *gin.Engine {
+func Router(ctx context.Context) *gin.Engine {
 	r := gin.Default()
 
 	r.POST("/query", graphqlHandler())

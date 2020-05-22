@@ -15,6 +15,5 @@ func Router() *gin.Engine {
 		Echo(c)
 	})
 
-
 	return r
 }

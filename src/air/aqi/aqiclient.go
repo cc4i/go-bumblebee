@@ -27,7 +27,6 @@ var (
 	//https://ipapi.co/8.8.8.8/json
 )
 
-
 type HttpClient interface {
 	Do(req *http.Request) (*http.Response, error)
 }
@@ -47,67 +46,64 @@ type IpStack struct {
 	Longitude     float64 `json:"longitude"`
 }
 
-
 type ApiError struct {
 	Status string `json:"status"`
-	Data string `json:"data"`
-
+	Data   string `json:"data"`
 }
 
 type AirQuality struct {
 	IndexCityVHash string `json:"index_city_v_hash"`
-	IndexCity string `json:"index_city"`
-	StationIndex int `json:"idx"`
-	AQI int `json:"aqi"`
-	City string `json:"city"`
-	CityCN string `json:"city_cn"`
-	Latitude string `json:"lat"`
-	Longitude string `json:"lng"`
-	Co string `json:"co"`
-	H string `json:"h"`
-	No2 string `json:"no2"`
-	O3 string `json:"o3"`
-	P string `json:"p"`
-	Pm10 string `json:"pm10"`
-	Pm25 string `json:"pm25"`
-	So2 string `json:"so2"`
-	T string `json:"t"`
-	W string `json:"w"`
-	S string `json:"s"` //Local measurement time
-	TZ string `json:"tz"` //Station timezone
-	V int `json:"v"`
+	IndexCity      string `json:"index_city"`
+	StationIndex   int    `json:"idx"`
+	AQI            int    `json:"aqi"`
+	City           string `json:"city"`
+	CityCN         string `json:"city_cn"`
+	Latitude       string `json:"lat"`
+	Longitude      string `json:"lng"`
+	Co             string `json:"co"`
+	H              string `json:"h"`
+	No2            string `json:"no2"`
+	O3             string `json:"o3"`
+	P              string `json:"p"`
+	Pm10           string `json:"pm10"`
+	Pm25           string `json:"pm25"`
+	So2            string `json:"so2"`
+	T              string `json:"t"`
+	W              string `json:"w"`
+	S              string `json:"s"`  //Local measurement time
+	TZ             string `json:"tz"` //Station timezone
+	V              int    `json:"v"`
 }
 
-
 type OriginAirQuality struct {
-	Status string `json:"status"`
-	Data OriginData `json:"data"`
+	Status string     `json:"status"`
+	Data   OriginData `json:"data"`
 }
 
 type OriginData struct {
-	AQI int `json:"aqi"`
-	StationIndex int `json:"idx"`
-	City OriginCity `json:"city"`
-	IAQI OriginIAQI	`json:"iaqi"`
-	OriginTime OriginTime `json:"time"`
+	AQI          int        `json:"aqi"`
+	StationIndex int        `json:"idx"`
+	City         OriginCity `json:"city"`
+	IAQI         OriginIAQI `json:"iaqi"`
+	OriginTime   OriginTime `json:"time"`
 }
 
 type OriginCity struct {
-	Geo []float64 `json:"geo"`
-	Name string `json:"name"`
+	Geo  []float64 `json:"geo"`
+	Name string    `json:"name"`
 }
 
 type OriginIAQI struct {
-	Co OValue `json:"co"`
-	H OValue `json:"h"`
-	No2 OValue `json:"no2"`
-	O3 OValue `json:"o3"`
-	P OValue `json:"p"`
+	Co   OValue `json:"co"`
+	H    OValue `json:"h"`
+	No2  OValue `json:"no2"`
+	O3   OValue `json:"o3"`
+	P    OValue `json:"p"`
 	Pm10 OValue `json:"pm10"`
 	Pm25 OValue `json:"pm25"`
-	So2 OValue `json:"so2"`
-	T OValue `json:"t"`
-	W OValue `json:"w"`
+	So2  OValue `json:"so2"`
+	T    OValue `json:"t"`
+	W    OValue `json:"w"`
 }
 
 type OValue struct {
@@ -115,12 +111,10 @@ type OValue struct {
 }
 
 type OriginTime struct {
-	S string `json:"s"` //Local measurement time
+	S  string `json:"s"`  //Local measurement time
 	TZ string `json:"tz"` //Station timezone
-	V int `json:"v"`
+	V  int    `json:"v"`
 }
-
-
 
 // Log handle for third parties
 var FL = log.New()
@@ -198,9 +192,7 @@ func Copy2AirQuality(src OriginAirQuality) AirQuality {
 	dest.IndexCityVHash = hex.EncodeToString(h.Sum(nil))
 	return dest
 
-
 }
-
 
 func HttpGet(ctx context.Context, url string) ([]byte, error) {
 	span, _ := opentracing.StartSpanFromContext(ctx, "HttpGet")
@@ -217,7 +209,7 @@ func HttpGet(ctx context.Context, url string) ([]byte, error) {
 		log.Printf("API call was failed from %s with Err: %s. \n", url, err)
 		FL.WithFields(log.Fields{
 			"request_to": url,
-			"error": err.Error(),
+			"error":      err.Error(),
 		}).Error("Request failed")
 		return nil, err
 	}
@@ -232,7 +224,7 @@ func HttpGet(ctx context.Context, url string) ([]byte, error) {
 	log.Printf("Response from %s : %s\n", url, string(body))
 	FL.WithFields(log.Fields{
 		"response_from": url,
-		"origin_body": string(body),
+		"origin_body":   string(body),
 	}).Info("Third party response")
 
 	return body, nil
@@ -256,5 +248,3 @@ func CityByIP(ctx context.Context, ip string) (string, error) {
 	return ipStack.City, nil
 
 }
-
-

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	log "github.com/sirupsen/logrus"
 	"gql/graph"
 	"io"
@@ -44,5 +45,9 @@ func main() {
 	defer closer.Close()
 	opentracing.SetGlobalTracer(tracer)
 
-	log.Fatal(graph.Router().Run("0.0.0.0:9030"))
+	span := tracer.StartSpan("http")
+	span.SetTag("gql", "http-9030")
+	ctx := opentracing.ContextWithSpan(context.Background(), span)
+	log.Fatal(graph.Router(ctx).Run("0.0.0.0:9030"))
+	defer span.Finish()
 }

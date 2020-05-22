@@ -56,7 +56,7 @@ func init() {
 }
 
 func AirOfCity(ctx context.Context, city string) (*model.AirQuality, error) {
-	span, _ := opentracing.StartSpanFromContext(ctx, "AirOfCity")
+	span, sctx := opentracing.StartSpanFromContext(ctx, "AirOfCity")
 	defer span.Finish()
 
 	var air model.AirQuality
@@ -65,7 +65,7 @@ func AirOfCity(ctx context.Context, city string) (*model.AirQuality, error) {
 	endpoint := os.Getenv("AIR_SERVICE_ENDPOINT")
 	url := "http://" + endpoint + "/air/city/" + city
 
-	buf, err := HttpGet(ctx, url)
+	buf, err := HttpGet(sctx, url)
 	if err != nil {
 		log.Debugf("Call air service from  %s", url)
 		err = errors.Wrapf(err, "Failed to call air service.")

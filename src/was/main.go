@@ -23,7 +23,6 @@ func httpServer(ctx context.Context, endPoint string) {
 	log.Fatal(httpsvr.Router(ctx).Run(endPoint))
 }
 
-
 // Run websocket server
 func websocketServer(endPoint string) {
 	log.Info("Serving on for WebSocket Service ...", endPoint)
@@ -63,16 +62,15 @@ func main() {
 
 	//http
 	span := tracer.StartSpan("http")
-	span.SetTag("http-to", "http-9010")
+	span.SetTag("http", "http-9010")
 	ctx := opentracing.ContextWithSpan(context.Background(), span)
 	go httpServer(ctx, "0.0.0.0:9010")
 	defer span.Finish()
 
 	//ws
 	span3 := tracer.StartSpan("ws")
-	span3.SetTag("ws-to", "ws-9040")
+	span3.SetTag("ws", "ws-9040")
 	websocketServer("0.0.0.0:9040")
 	defer span3.Finish()
-
 
 }
