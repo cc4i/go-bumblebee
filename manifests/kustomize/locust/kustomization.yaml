@@ -5,9 +5,8 @@ kind: Kustomization
 
 # list of resource config to be applied
 resources:
-- air-secret.yaml
-- air-deployment.yaml
-- air-service.yaml
+- locust-deployment.yaml
+- locust-service.yaml
 
 # # namespace to deploy all resources to
 # namespace: go-bumblebee

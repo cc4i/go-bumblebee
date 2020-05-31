@@ -1,17 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Deployment 
 metadata:
-  name: airservice
+  name: air
 spec:
   replicas: 3
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: airservice 
+      app: air 
   template:
     metadata:
       labels: 
-        app: airservice 
+        app: air 
     spec:
       terminationGracePeriodSeconds: 5
       containers:

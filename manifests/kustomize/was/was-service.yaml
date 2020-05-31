@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: was
+spec: 
+  type: ClusterIP
+  selector:
+    app: was
+  ports:
+  - name: http
+    port: 9010
+    targetPort: 9010
+  - name: websocket
+    port: 9040
+    targetPort: 9040     

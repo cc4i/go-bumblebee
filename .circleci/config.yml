@@ -3,7 +3,7 @@
 # Check https://circleci.com/docs/2.0/language-go/ for more details
 version: 2
 jobs:
-  build-gate:
+  build-was:
     docker:
       # specify the version
       - image: circleci/golang:1.14.1
@@ -21,7 +21,7 @@ jobs:
             cd /go/src/github.com/cc4i/go-bumblebee/src/gate
             make test
 
-  build-gate-image:
+  build-was-image:
     machine: true
     steps:
       - checkout
@@ -32,8 +32,8 @@ jobs:
           command: |
             cd /home/circleci/project/src/gate
             echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin
-            docker build -t $DOCKER_USER/go-bumblebee-gate:$CIRCLE_BRANCH .
-            docker push $DOCKER_USER/go-bumblebee-gate:$CIRCLE_BRANCH
+            make docker-build
+            make docker-push
 
   build-air:
     docker:
@@ -51,9 +51,7 @@ jobs:
             which go
             echo $PATH
             cd /go/src/github.com/cc4i/go-bumblebee/src/air
-            ls -F
-            go get -v -d
-            go test -v -cover ./...
+            make test
 
   build-air-image:
     machine: true
@@ -66,10 +64,10 @@ jobs:
           command: |
             cd /home/circleci/project/src/air
             echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin
-            docker build -t $DOCKER_USER/go-bumblebee-air:$CIRCLE_BRANCH .
-            docker push $DOCKER_USER/go-bumblebee-air:$CIRCLE_BRANCH
+            make docker-build
+            make docker-push
 
-  build-spy:
+  build-gql:
     docker:
       # specify the version
       - image: circleci/golang:1.14.1
@@ -84,11 +82,10 @@ jobs:
           command: |
             which go
             echo $PATH
-            cd /go/src/github.com/cc4i/go-bumblebee/src/spy
-            ls -F
+            cd /go/src/github.com/cc4i/go-bumblebee/src/gql
             make test
 
-  build-spy-image:
+  build-gql-image:
     machine: true
     steps:
       - checkout
@@ -97,31 +94,12 @@ jobs:
       - run: 
           name: building image & push
           command: |
-            cd /home/circleci/project/src/spy
+            cd /home/circleci/project/src/gql
             echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin
-            docker build -t $DOCKER_USER/go-bumblebee-spy:$CIRCLE_BRANCH .
-            docker push $DOCKER_USER/go-bumblebee-spy:$CIRCLE_BRANCH
-  build-bee:
-    docker:
-      # specify the version
-      - image: circleci/node:12.16.2-browsers
+            make docker-build
+            make docker-push
 
-    working_directory: ~/go-bumblebee
-    steps:
-      - checkout
-
-      # specify any bash command here prefixed with `run: `
-      - run: 
-          name: building & test
-          command: |
-            cd ~/go-bumblebee/src/bee
-            npm install 
-            npm install @angular/cli@9.1.1
-            npm run ngcc
-            export PATH=~/go-bumblebee/src/bee/node_modules/@angular/cli/bin:$PATH
-            ng test --watch=false
-
-  build-bee-image:
+  build-locust-image:
     machine: true
     steps:
       - checkout
@@ -130,31 +108,28 @@ jobs:
       - run: 
           name: building image & push
           command: |
-            cd /home/circleci/project/src/bee
+            cd /home/circleci/project/src/locust
             echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin
-            docker build -t $DOCKER_USER/go-bumblebee-bee:$CIRCLE_BRANCH .
-            docker push $DOCKER_USER/go-bumblebee-bee:$CIRCLE_BRANCH
+            make docker-build
+            make docker-push
 
 workflows:
   version: 2
   build-workflow:
     jobs:
-      - build-gate
-      - build-gate-image:
+      - build-was
+      - build-was-image:
           requires:
-            - build-gate
+            - build-was
 
       - build-air
       - build-air-image:
           requires:
             - build-air
 
-      - build-spy
-      - build-spy-image:
+      - build-gql
+      - build-gql-image:
           requires:
-            - build-spy
+            - build-gql
 
-      - build-bee
-      - build-bee-image:
-          requires:
-            - build-bee
+      - build-locust-image

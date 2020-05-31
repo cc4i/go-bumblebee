@@ -6,17 +6,18 @@
 namespace: go-bumblebee
 
 resources:
-- gate
+- redis
+- was
 - air
+- gql
+
 
 
 # all with following *kustomization*
 images:
-  - name: herochinese/go-bumblebee-gate
-    newTag: front-end-site-v1
+  - name: herochinese/go-bumblebee-was
+    newTag: new-combo-jazz
   - name: herochinese/go-bumblebee-air
-    newTag: front-end-site-v1
-  - name: herochinese/go-bumblebee-spy
-    newTag: front-end-site-v1
-  - name: herochinese/go-bumblebee-bee
-    newTag: front-end-site-v1
+    newTag: new-combo-jazz
+  - name: herochinese/go-bumblebee-gql
+    newTag: new-combo-jazz

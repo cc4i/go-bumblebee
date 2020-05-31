@@ -1,6 +1,0 @@
-bumblebee:
-  services:
-    - gate
-    - air
-    - spy
-    - bee
