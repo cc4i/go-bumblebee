@@ -147,3 +147,4 @@ workflows:
             - build-gql
 
       - build-locust-image
+      - build-front-image

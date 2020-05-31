@@ -14,6 +14,6 @@ docker-build:
 
 # Push the docker image
 docker-push:
-	echo ${DOCKER_PASS} | docker login --username ${DOCKER_USER} --password-stdin
+	# echo ${DOCKER_PASS} | docker login --username ${DOCKER_USER} --password-stdin
 	docker push ${DOCKER_IMAGE}:${DOCKER_TAG}
 
