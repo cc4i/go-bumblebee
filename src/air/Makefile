@@ -33,7 +33,7 @@ vet:
 	go vet ./...
 
 # Build the docker image
-docker-build: test
+docker-build:
 	docker build . -t ${DOCKER_IMAGE}:${DOCKER_TAG}
 
 # Push the docker image

@@ -1,14 +1,12 @@
 
 # Image URL to use all building/pushing
-DOCKER_IMAGE ?= herochinese/go-bumblebee-locust
+DOCKER_IMAGE ?= herochinese/go-bumblebee-front
 DOCKER_TAG ?= $(shell git rev-parse --abbrev-ref HEAD)
 # Docker Hub username / password
 DOCKER_PASS =
 DOCKER_USER =
 
 
-#generate:
-#	go run github.com/99designs/gqlgen generate ./...
 
 # Build the docker image
 docker-build:

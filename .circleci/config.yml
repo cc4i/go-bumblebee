@@ -18,7 +18,7 @@ jobs:
           command: |
             which go
             echo $PATH
-            cd /go/src/github.com/cc4i/go-bumblebee/src/gate
+            cd /go/src/github.com/cc4i/go-bumblebee/src/was
             make test
 
   build-was-image:
@@ -30,7 +30,7 @@ jobs:
       - run: 
           name: building image & push
           command: |
-            cd /home/circleci/project/src/gate
+            cd /home/circleci/project/src/was
             echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin
             make docker-build
             make docker-push
@@ -109,6 +109,20 @@ jobs:
           name: building image & push
           command: |
             cd /home/circleci/project/src/locust
+            echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin
+            make docker-build
+            make docker-push
+
+  build-front-image:
+    machine: true
+    steps:
+      - checkout
+
+      # specify any bash command here prefixed with `run: `
+      - run: 
+          name: building image & push
+          command: |
+            cd /home/circleci/project/src/front
             echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin
             make docker-build
             make docker-push

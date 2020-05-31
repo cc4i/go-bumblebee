@@ -10,6 +10,7 @@ resources:
 - was
 - air
 - gql
+- front
 
 
 
@@ -20,4 +21,6 @@ images:
   - name: herochinese/go-bumblebee-air
     newTag: new-combo-jazz
   - name: herochinese/go-bumblebee-gql
+    newTag: new-combo-jazz
+  - name: herochinese/go-bumblebee-front
     newTag: new-combo-jazz
