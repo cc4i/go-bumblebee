@@ -15,7 +15,7 @@ It's sample application with Microservices style on Kubernetes, developers can l
 ![ss](./docs/arch0.jpg)
 
 ## Interesting Branches
-Go-Bumblebee-Jazz: https://github.com/cc4i/go-bumblebee/tree/new-combo-jazz
+- [Go-Bumblebee-Jazz](https://github.com/cc4i/go-bumblebee/tree/new-combo-jazz)
 
 ## Tutorial
 
