@@ -1,16 +1,25 @@
 version: 0.2
+
 phases:
     pre_build:
         commands:
-          - echo Logging in to Docker Hub...
-          - echo ${DOCKER_PASS} | docker login --username ${DOCKER_USER} --password-stdin         
+          - echo Logging in to Amazon ECR...
+          - echo $AWS_DEFAULT_REGION
+          - aws --version
+          - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+          - ACCOUNT_ID=$(aws sts get-caller-identity|jq -r '.Account')
+          - DOCKER_IMAGE=herochinese/go-bumblebee-air
+          - IMAGE_TAG=$(git rev-parse --abbrev-ref HEAD)
+          - REPOSITORY_URI=$ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$DOCKER_IMAGE      
     build:
         commands:
           - echo Build started on `date`
           - echo Building the Docker image...
           - make test
           - make docker-build
+          - docker tag $DOCKER_IMAGE:$IMAGE_TAG $REPOSITORY_URI:$IMAGE_TAG
     post_build:
         commands:
           - echo Build completed on `date`
-          - make docker-push
+          - echo Pushing the Docker images...
+          - docker push $REPOSITORY_URI:$IMAGE_TAG

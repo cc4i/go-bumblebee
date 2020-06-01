@@ -1,0 +1,16 @@
+version: 0.2
+phases:
+    pre_build:
+        commands:
+          - echo Logging in to Docker Hub...
+          - echo ${DOCKER_PASS} | docker login --username ${DOCKER_USER} --password-stdin         
+    build:
+        commands:
+          - echo Build started on `date`
+          - echo Building the Docker image...
+          - make test
+          - make docker-build
+    post_build:
+        commands:
+          - echo Build completed on `date`
+          - make docker-push
