@@ -29,8 +29,7 @@ phases:
               --image-scanning-configuration scanOnPush=true \
               --region $AWS_DEFAULT_REGION || true
           - |
-            curl -s "https://raw.githubusercontent.com/\
-              kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+            curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
           - export PATH=$PWD:$PATH
           - kustomize version
     build:
