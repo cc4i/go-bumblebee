@@ -9,9 +9,6 @@ phases:
           - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
           - ACCOUNT_ID=$(aws sts get-caller-identity|jq -r '.Account')
           - DOCKER_IMAGE=herochinese/go-bumblebee-air
-          - git version
-          - git rev-parse --abbrev-ref HEAD
-          - git symbolic-ref --short HEAD
           - IMAGE_TAG=$CODEBUILD_SOURCE_VERSION
           - REPOSITORY_URI=$ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$DOCKER_IMAGE  
           - |
