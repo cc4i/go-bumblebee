@@ -6,11 +6,13 @@
 namespace: go-bumblebee
 
 resources:
+- ns.yaml
 - redis
 - was
 - air
 - gql
 - front
+- locust
 
 
 

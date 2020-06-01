@@ -7,6 +7,8 @@ kind: Kustomization
 resources:
 - gql-deployment.yaml
 - gql-service.yaml
+- gateway.yaml
+- virtual-service.yaml
 
 # # namespace to deploy all resources to
 # namespace: go-bumblebee

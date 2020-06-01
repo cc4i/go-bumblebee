@@ -6,8 +6,7 @@ class QuickstartUser(HttpUser):
 
     @task
     def index_page(self):
-        self.client.get("/ping")
-        self.client.get("/version")
+        self.client.get("/air/version")
         self.client.get("/air/aqi")
 
     @task(3)

@@ -8,13 +8,15 @@ import (
 	"os"
 )
 
+var prefix = "/air"
+
 // API routes/path definition
 func Router(ctx context.Context) *gin.Engine {
 	r := gin.Default()
 
 	// Get air quality data of given city
 	// Example: ?c="city"
-	r.GET("/air/city/:city", func(c *gin.Context) {
+	r.GET(prefix+"/city/:city", func(c *gin.Context) {
 		AirOfCity(ctx, c)
 	})
 
@@ -22,7 +24,7 @@ func Router(ctx context.Context) *gin.Engine {
 	//
 	// Destination: /feed/here/?token=:token
 	//				api.ipstack.com/:ip?access_key=ad7c6834f8dba51e8943d96d3742fcc5
-	r.GET("/air/ip/:ip", func(c *gin.Context) {
+	r.GET(prefix+"/ip/:ip", func(c *gin.Context) {
 		AirOfIP(ctx, c)
 	})
 
@@ -30,7 +32,7 @@ func Router(ctx context.Context) *gin.Engine {
 	// Example: ?lat=&lng=
 	//
 	// Destination: /feed/geo::lat;:lng/?token=:token
-	r.GET("/air/geo/:lat/:lng", func(c *gin.Context) {
+	r.GET(prefix+"/geo/:lat/:lng", func(c *gin.Context) {
 		AirOfGeo(ctx, c)
 	})
 
@@ -38,7 +40,7 @@ func Router(ctx context.Context) *gin.Engine {
 	// Example: ?lat1=39.379436&lng1=116.091230&lat2=40.235643&lng2=116.784382
 	//
 	// Destination: /map/bounds/?token=:token&latlng=:latlng
-	r.POST("/station/bounds", func(c *gin.Context) {
+	r.POST(prefix+"/station/bounds", func(c *gin.Context) {
 		//TODO
 		//lat1:lng1:lat2:lng2
 		c.String(http.StatusHTTPVersionNotSupported, "Working in progress")
@@ -48,13 +50,13 @@ func Router(ctx context.Context) *gin.Engine {
 	// Example: ?c="city"
 	//
 	// Destination: /search/?keyword=:keyword&token=:token
-	r.POST("/station/city", func(c *gin.Context) {
+	r.POST(prefix+"/station/city", func(c *gin.Context) {
 		//TODO
 		c.String(http.StatusHTTPVersionNotSupported, "Working in progress")
 	})
 
 	// Get AQIServer standard: Air Quality Index scale as defined by the US-EPA 2016 standard
-	r.GET("/air/aqi", func(c *gin.Context) {
+	r.GET(prefix+"/aqi", func(c *gin.Context) {
 		c.String(http.StatusOK, `
 			{
 				"Standard": "Air Quality Index scale as defined by the US-EPA 2016 standard",
@@ -110,7 +112,7 @@ func Router(ctx context.Context) *gin.Engine {
 
 	})
 	// Version from ENV for test purpose
-	r.GET("/version", func(c *gin.Context) {
+	r.GET(prefix+"/version", func(c *gin.Context) {
 		version := os.Getenv("AIR_VERSION")
 		if version == "" {
 			version = "v0.0.0"

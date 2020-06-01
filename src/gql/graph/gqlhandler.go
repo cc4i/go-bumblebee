@@ -17,13 +17,15 @@ import (
 // $ go run github.com/99designs/gqlgen generate
 //
 /// !!!
+var prefix = "/gql"
 
 func Router(ctx context.Context) *gin.Engine {
+
 	r := gin.Default()
 
-	r.POST("/query", graphqlHandler())
+	r.POST(prefix+"/query", graphqlHandler())
 
-	r.GET("/", playgroundHandler())
+	r.GET(prefix+"/", playgroundHandler())
 
 	r.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")
@@ -45,7 +47,7 @@ func graphqlHandler() gin.HandlerFunc {
 
 // Defining the Playground handler
 func playgroundHandler() gin.HandlerFunc {
-	h := playground.Handler("GraphQL", "/query")
+	h := playground.Handler("GraphQL", prefix+"/query")
 
 	return func(c *gin.Context) {
 		h.ServeHTTP(c.Writer, c.Request)

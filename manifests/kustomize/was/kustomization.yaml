@@ -5,8 +5,12 @@ kind: Kustomization
 
 # list of resource config to be applied
 resources:
+- service-account.yaml
 - was-deployment.yaml
-- was-service.yaml
+- was-http-service.yaml
+- was-websocket-service.yaml
+- gateway.yaml
+- virtual-service.yaml
 
 # # namespace to deploy all resources to
 # namespace: go-bumblebee

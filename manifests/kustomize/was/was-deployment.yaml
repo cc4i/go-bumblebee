@@ -3,15 +3,19 @@ kind: Deployment
 metadata:
   name: was
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: was 
+      version: v1
   template:
     metadata:
       labels: 
         app: was 
+        version: v1
     spec:
       terminationGracePeriodSeconds: 5
+      serviceAccountName: was-service-account
       containers:
       - name: was-go-bumblebee
         image:  herochinese/go-bumblebee-was:new-combo-jazz

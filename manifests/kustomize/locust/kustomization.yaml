@@ -8,6 +8,7 @@ resources:
 - locust-deployment.yaml
 - locust-service.yaml
 
+
 # # namespace to deploy all resources to
 # namespace: go-bumblebee
 
