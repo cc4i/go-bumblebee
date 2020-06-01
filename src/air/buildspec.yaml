@@ -51,6 +51,8 @@ phases:
           - docker push $REPOSITORY_URI:$IMAGE_TAG
           - cd; mkdir workspace; cd workspace 
           - git clone https://$ACCESS_TOKEN:x-oauth-basic@github.com/$GITHUB_USER/$APP_CONF_REPO.git
+          - git config --global user.email "robot@codebuild.aws"
+          - git config --global user.name "robot"
           - cd $APP_CONF_REPO
           - cd kustomize/staging
           - kustomize edit set image herochinese/go-bumblebee-was=$REPOSITORY_URI:$IMAGE_TAG
