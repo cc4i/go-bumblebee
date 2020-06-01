@@ -10,7 +10,12 @@ phases:
           - ACCOUNT_ID=$(aws sts get-caller-identity|jq -r '.Account')
           - DOCKER_IMAGE=herochinese/go-bumblebee-air
           - IMAGE_TAG=$(git rev-parse --abbrev-ref HEAD)
-          - REPOSITORY_URI=$ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$DOCKER_IMAGE      
+          - REPOSITORY_URI=$ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$DOCKER_IMAGE  
+          - |
+            aws ecr create-repository \
+              --repository-name $DOCKER_IMAGE \
+              --image-scanning-configuration scanOnPush=true \
+              --region $AWS_DEFAULT_REGION || true
     build:
         commands:
           - echo Build started on `date`
@@ -18,7 +23,9 @@ phases:
           - echo $PWD
           - cd src/air
           - make test
+          - echo Building $DOCKER_IMAGE:$IMAGE_TAG...
           - make docker-build
+          - echo Tagging $REPOSITORY_URI:$IMAGE_TAG...
           - docker tag $DOCKER_IMAGE:$IMAGE_TAG $REPOSITORY_URI:$IMAGE_TAG
     post_build:
         commands:
