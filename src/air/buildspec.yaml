@@ -28,6 +28,7 @@ phases:
               --repository-name $DOCKER_IMAGE \
               --image-scanning-configuration scanOnPush=true \
               --region $AWS_DEFAULT_REGION || true
+          - kustomize version
     build:
         commands:
           - echo Build started on `date`
@@ -48,9 +49,9 @@ phases:
           - git clone https://$ACCESS_TOKEN:x-oauth-basic@github.com/cc4i/$APP_CONF_REPO.git
           - cd $APP_CONF_REPO
           - cd kustomize/staging
-          - kuustomize edit set kustomize edit set image herochinese/go-bumblebee-was=$REPOSITORY_URI:$IMAGE_TAG
+          - kustomize edit set kustomize edit set image herochinese/go-bumblebee-was=$REPOSITORY_URI:$IMAGE_TAG
           - cd ../production
-          - kuustomize edit set kustomize edit set image herochinese/go-bumblebee-was=$REPOSITORY_URI:$IMAGE_TAG
+          - kustomize edit set kustomize edit set image herochinese/go-bumblebee-was=$REPOSITORY_URI:$IMAGE_TAG
           - git add -A
           - git commit -m "update kustomization"
           - git push
