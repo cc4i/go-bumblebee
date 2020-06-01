@@ -19,10 +19,17 @@ resources:
 # all with following *kustomization*
 images:
   - name: herochinese/go-bumblebee-was
+    newName: herochinese/go-bumblebee-was
     newTag: new-combo-jazz
   - name: herochinese/go-bumblebee-air
+    newName: herochinese/go-bumblebee-air
     newTag: new-combo-jazz
   - name: herochinese/go-bumblebee-gql
+    newName: herochinese/go-bumblebee-gql
     newTag: new-combo-jazz
   - name: herochinese/go-bumblebee-front
+    newName: herochinese/go-bumblebee-front
     newTag: new-combo-jazz
+  - name: herochinese/go-bumblebee-locust
+    newName: herochinese/go-bumblebee-locust
+    newTag: new-combo-jazz    
