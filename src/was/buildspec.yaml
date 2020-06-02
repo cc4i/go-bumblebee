@@ -1,16 +1,65 @@
 version: 0.2
+
+env:
+  variables:
+    APP_NAME: was
+  secrets-manager:
+    GITHUB_USER: github-bumblebee:githubUser
+    ACCESS_TOKEN: github-bumblebee:accessToken
+    APP_CONF_REPO: github-bumblebee:appConfRepo
+
 phases:
     pre_build:
         commands:
-          - echo Logging in to Docker Hub...
-          - echo ${DOCKER_PASS} | docker login --username ${DOCKER_USER} --password-stdin         
+          - echo Logging in to Amazon ECR...
+          - echo $AWS_DEFAULT_REGION
+          - aws --version
+          - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+          - ACCOUNT_ID=$(aws sts get-caller-identity|jq -r '.Account')
+          - DOCKER_IMAGE=herochinese/go-bumblebee-$APP_NAME
+          - IMAGE_TAG=$CODEBUILD_SOURCE_VERSION
+          - REPOSITORY_URI=$ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$DOCKER_IMAGE  
+          - |
+            export CODEBUILD_GIT_BRANCH="$(git symbolic-ref HEAD --short 2>/dev/null)"
+            if [ "$CODEBUILD_GIT_BRANCH" = "" ] ; then
+              CODEBUILD_GIT_BRANCH="$(git branch -a --contains HEAD | sed -n 2p | awk '{ printf $1 }')";
+              export CODEBUILD_GIT_BRANCH=${CODEBUILD_GIT_BRANCH#remotes/origin/};
+            fi
+            echo $CODEBUILD_GIT_BRANCH
+          - |
+            aws ecr create-repository \
+              --repository-name $DOCKER_IMAGE \
+              --image-scanning-configuration scanOnPush=true \
+              --region $AWS_DEFAULT_REGION || true
+          - |
+            curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
+          - export PATH=$PWD:$PATH
+          - kustomize version
     build:
         commands:
           - echo Build started on `date`
           - echo Building the Docker image...
+          - echo $PWD
+          - cd src/air
           - make test
-          - make docker-build
+          - echo Building $DOCKER_IMAGE:$IMAGE_TAG...
+          - docker build . -t $DOCKER_IMAGE:$IMAGE_TAG
+          - echo Tagging $REPOSITORY_URI:$IMAGE_TAG...
+          - docker tag $DOCKER_IMAGE:$IMAGE_TAG $REPOSITORY_URI:$IMAGE_TAG
     post_build:
         commands:
           - echo Build completed on `date`
-          - make docker-push
+          - echo Pushing the Docker images...
+          - docker push $REPOSITORY_URI:$IMAGE_TAG
+          - cd; mkdir workspace; cd workspace 
+          - git clone https://$ACCESS_TOKEN:x-oauth-basic@github.com/$GITHUB_USER/$APP_CONF_REPO.git
+          - git config --global user.email "robot@codebuild.aws"
+          - git config --global user.name "robot"
+          - cd $APP_CONF_REPO
+          - cd kustomize/staging
+          - kustomize edit set image herochinese/go-bumblebee-$APP_NAME=$REPOSITORY_URI:$IMAGE_TAG
+          - cd ../production
+          - kustomize edit set image herochinese/go-bumblebee-$APP_NAME=$REPOSITORY_URI:$IMAGE_TAG
+          - git add -A
+          - git commit -m "update kustomization"
+          - git push
