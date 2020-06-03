@@ -2,7 +2,7 @@ version: 0.2
 
 env:
   variables:
-    APP_NAME: locust
+    APP_NAME: "locust"
   secrets-manager:
     GITHUB_USER: github-bumblebee:githubUser
     ACCESS_TOKEN: github-bumblebee:accessToken

@@ -2,7 +2,7 @@ version: 0.2
 
 env:
   variables:
-    APP_NAME: front
+    APP_NAME: "front"
   secrets-manager:
     GITHUB_USER: github-bumblebee:githubUser
     ACCESS_TOKEN: github-bumblebee:accessToken
