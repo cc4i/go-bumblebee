@@ -40,7 +40,7 @@ phases:
           - echo Build started on `date`
           - echo Building the Docker image...
           - echo $PWD
-          - cd src/air
+          - cd src/$APP_NAME
           - make test
           - echo Building $DOCKER_IMAGE:$IMAGE_TAG...
           - docker build . -t $DOCKER_IMAGE:$IMAGE_TAG
@@ -56,9 +56,9 @@ phases:
           - git config --global user.email "robot@codebuild.aws"
           - git config --global user.name "robot"
           - cd $APP_CONF_REPO
-          - cd kustomize/staging
+          - cd kustomize/staging/$APP_NAME
           - kustomize edit set image herochinese/go-bumblebee-$APP_NAME=$REPOSITORY_URI:$IMAGE_TAG
-          - cd ../production
+          - cd ../../production/$APP_NAME
           - kustomize edit set image herochinese/go-bumblebee-$APP_NAME=$REPOSITORY_URI:$IMAGE_TAG
           - git add -A
           - git commit -m "update kustomization"
