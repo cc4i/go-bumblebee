@@ -59,7 +59,7 @@ func Router(ctx context.Context) *gin.Engine {
 	r.GET(prefix+"/aqi", func(c *gin.Context) {
 		c.String(http.StatusOK, `
 			{
-				"Standard": "Air Quality Index scale as defined by the US-EPA 2016 standard: TESTED CHANGES",
+				"Standard": "Air Quality Index scale as defined by the US-EPA 2016 standard. WuHan workshop!",
 				"Definitions": [
 					{
 						"AQIServer": "0-50",
