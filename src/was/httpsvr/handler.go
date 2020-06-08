@@ -10,7 +10,15 @@ import (
 	"os"
 )
 
+func headers(c *gin.Context) {
+	ver := os.Getenv("OVERRIDE_VERSION")
+	if ver == "" { ver="v1" }
+	c.Header("was_server","was")
+	c.Header("was_version", ver)
+}
+
 func Ping(ctx context.Context, c *gin.Context) {
+	headers(c)
 	span, _ := opentracing.StartSpanFromContext(ctx, "Ping")
 	defer span.Finish()
 
@@ -18,12 +26,13 @@ func Ping(ctx context.Context, c *gin.Context) {
 }
 
 func ProxyAir(ctx context.Context, c *gin.Context) {
+	headers(c)
 	span, _ := opentracing.StartSpanFromContext(ctx, "ProxyAir")
 	defer span.Finish()
 
 	endpoint := os.Getenv("AIR_SERVICE_ENDPOINT")
 	if url, err := url.Parse("http://" + endpoint); err != nil {
-		c.String(http.StatusInternalServerError, err.Error())
+		c.JSON(http.StatusInternalServerError, err.Error())
 	} else {
 		r := httputil.NewSingleHostReverseProxy(url)
 		allowCORS(ctx, c)

@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gql/graph/generated"
 	"net/http"
+	"os"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
@@ -19,6 +20,13 @@ import (
 /// !!!
 var prefix = "/gql"
 
+func headers(c *gin.Context) {
+	ver := os.Getenv("OVERRIDE_VERSION")
+	if ver == "" { ver="v1" }
+	c.Header("gql_server","air")
+	c.Header("gql_version", ver)
+}
+
 func Router(ctx context.Context) *gin.Engine {
 
 	r := gin.Default()
@@ -28,6 +36,7 @@ func Router(ctx context.Context) *gin.Engine {
 	r.GET(prefix+"/", playgroundHandler())
 
 	r.GET("/ping", func(c *gin.Context) {
+		headers(c)
 		c.String(http.StatusOK, "pong")
 	})
 
@@ -41,6 +50,7 @@ func graphqlHandler() gin.HandlerFunc {
 	h := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &Resolver{}}))
 
 	return func(c *gin.Context) {
+		headers(c)
 		h.ServeHTTP(c.Writer, c.Request)
 	}
 }

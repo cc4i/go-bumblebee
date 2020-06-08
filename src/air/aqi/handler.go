@@ -19,6 +19,13 @@ var (
 	RedisClient         *redis.Client
 )
 
+func headers(c *gin.Context) {
+	ver := os.Getenv("OVERRIDE_VERSION")
+	if ver == "" { ver="v1" }
+	c.Header("air_server","air")
+	c.Header("air_version", ver)
+}
+
 func init() {
 	RedisServer = os.Getenv("REDIS_SERVER_ADDRESS")
 	RedisServerPassword = os.Getenv("REDIS_SERVER_PASSWORD")
@@ -80,6 +87,7 @@ func CachedAirQuality(ctx context.Context, city string) (AirQuality, error) {
 func AirOfGeo(ctx context.Context, c *gin.Context) {
 	///air/geo/:lat/:lng ->//feed/geo::lat;:lng/?token=:token
 	//Auckland: -36.916839599609375, 174.70875549316406
+	headers(c)
 	span, _ := opentracing.StartSpanFromContext(ctx, "http-AirOfGeo")
 	defer span.Finish()
 
@@ -112,6 +120,7 @@ func byCity(ctx context.Context, city string) (AirQuality, error) {
 }
 
 func AirOfCity(ctx context.Context, c *gin.Context) {
+	headers(c)
 	span, sctx := opentracing.StartSpanFromContext(ctx, "http-AirOfCity")
 	defer span.Finish()
 
@@ -165,6 +174,7 @@ func convertAir(content []byte) (AirQuality, error) {
 }
 
 func AirOfIP(ctx context.Context, c *gin.Context) {
+	headers(c)
 	span, sctx := opentracing.StartSpanFromContext(ctx, "http-AirOfIP")
 	defer span.Finish()
 
