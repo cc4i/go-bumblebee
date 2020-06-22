@@ -6,14 +6,20 @@
 namespace: go-bumblebee
 
 resources:
-- ../../air
+- ns.yaml
+- air
+- front
+- gql
+- locust
+- redis
+- was
 
 
 # all with following *kustomization*
-images:
-- name: herochinese/go-bumblebee-air
-  newName: __air_docker_image__
-  newTag: __air_image_tag__
+# images:
+# - name: 
+#   newName: 
+#   newTag: 
 
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization

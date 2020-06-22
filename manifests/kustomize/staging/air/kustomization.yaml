@@ -6,7 +6,6 @@
 namespace: go-bumblebee
 
 resources:
-- ns.yaml
 - ../../air
 
 

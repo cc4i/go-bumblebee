@@ -6,15 +6,14 @@
 namespace: go-bumblebee
 
 resources:
-- ns.yaml
-- ../../was
+- ../../air
 
 
 # all with following *kustomization*
 images:
-- name: herochinese/go-bumblebee-was
-  newName: __was_docker_image__
-  newTag: __was_image_tag__
+- name: herochinese/go-bumblebee-air
+  newName: __air_docker_image__
+  newTag: __air_image_tag__
 
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization

@@ -3,4 +3,4 @@ kind: Namespace
 metadata:
   name: go-bumblebee
   labels:
-    istio-injection: enabled
+    linkerd.io/inject: enabled 
