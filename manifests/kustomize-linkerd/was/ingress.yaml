@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: web-ingress
+  namespace: go-bumblebee
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+    ingress.kubernetes.io/custom-request-headers: l5d-dst-override:was-http.go-bumblebee.svc.cluster.local:80
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /air
+        backend:
+          serviceName: was-http
+          servicePort: 9010
