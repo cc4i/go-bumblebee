@@ -11,6 +11,3 @@ resources:
 # # namespace to deploy all resources to
 # namespace: go-bumblebee
 
-
-commonLabels:
-  author: cc

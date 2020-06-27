@@ -13,5 +13,3 @@ resources:
 # namespace: go-bumblebee
 
 
-commonLabels:
-  author: cc
