@@ -1,6 +1,7 @@
-package aqi
+package v2
 
 import (
+	"air/aqi"
 	"context"
 	"encoding/json"
 	"errors"
@@ -19,10 +20,17 @@ var (
 	RedisClient         *redis.Client
 )
 
+type ResponseAirQuality struct {
+	ServerVersion string         `json:"server_version"`
+	Air           aqi.AirQuality `json:"air_quality"`
+}
+
 func headers(c *gin.Context) {
 	ver := os.Getenv("OVERRIDE_VERSION")
-	if ver == "" { ver="v1" }
-	c.Header("air_server","air")
+	if ver == "" {
+		ver = "v2"
+	}
+	c.Header("air_server", "air")
 	c.Header("air_version", ver)
 }
 
@@ -43,7 +51,7 @@ func init() {
 	}
 }
 
-func CachingAirQuality(ctx context.Context, city string, quality AirQuality) error {
+func CachingAirQuality(ctx context.Context, city string, quality aqi.AirQuality) error {
 	span, _ := opentracing.StartSpanFromContext(ctx, "CachingAirQuality")
 	defer span.Finish()
 
@@ -59,11 +67,11 @@ func CachingAirQuality(ctx context.Context, city string, quality AirQuality) err
 	return err
 }
 
-func CachedAirQuality(ctx context.Context, city string) (AirQuality, error) {
+func CachedAirQuality(ctx context.Context, city string) (aqi.AirQuality, error) {
 	span, _ := opentracing.StartSpanFromContext(ctx, "CachedAirQuality")
 	defer span.Finish()
 
-	var air = AirQuality{}
+	var air = aqi.AirQuality{}
 
 	if RedisClient == nil {
 		return air, errors.New("redis client was nil")
@@ -93,8 +101,8 @@ func AirOfGeo(ctx context.Context, c *gin.Context) {
 
 	lat := c.Param("lat")
 	lng := c.Param("lng")
-	url := AQIServer + "/feed/geo:" + lat + ";" + lng + "/?token=" + AQIServerToken
-	if buf, err := HttpGet(ctx, url); err != nil {
+	url := aqi.AQIServer + "/feed/geo:" + lat + ";" + lng + "/?token=" + aqi.AQIServerToken
+	if buf, err := aqi.HttpGet(ctx, url); err != nil {
 		log.Error(err)
 		c.JSON(http.StatusInternalServerError, err)
 
@@ -107,14 +115,14 @@ func AirOfGeo(ctx context.Context, c *gin.Context) {
 	}
 }
 
-func byCity(ctx context.Context, city string) (AirQuality, error) {
+func byCity(ctx context.Context, city string) (aqi.AirQuality, error) {
 
-	url := AQIServer + "/feed/" + city + "/?token=" + AQIServerToken
+	url := aqi.AQIServer + "/feed/" + city + "/?token=" + aqi.AQIServerToken
 	// ---
-	buf, err := HttpGet(ctx, url)
+	buf, err := aqi.HttpGet(ctx, url)
 	if err != nil {
 		log.Errorf("Fail to call AQIServer service from %s", url)
-		return AirQuality{}, err
+		return aqi.AirQuality{}, err
 	}
 	return convertAir(buf)
 }
@@ -138,7 +146,18 @@ func AirOfCity(ctx context.Context, c *gin.Context) {
 				log.Errorf("Caching air quality data was failed. -> %s, %s\n", air.City, err)
 			}
 			log.Infof("Air Quality of %s was cached.\n ", city)
-			c.JSON(http.StatusOK, air)
+			if os.Getenv("AIR_VERSION")=="" {
+				c.JSON(http.StatusOK, ResponseAirQuality{
+					ServerVersion: "v1",
+					Air:           air,
+				})
+			} else {
+				c.JSON(http.StatusOK, ResponseAirQuality{
+					ServerVersion: os.Getenv("AIR_VERSION"),
+					Air:           air,
+				})
+			}
+
 		}
 
 	} else {
@@ -148,10 +167,10 @@ func AirOfCity(ctx context.Context, c *gin.Context) {
 
 }
 
-func convertAir(content []byte) (AirQuality, error) {
-	var originAir OriginAirQuality
-	var newAir AirQuality
-	var apiError ApiError
+func convertAir(content []byte) (aqi.AirQuality, error) {
+	var originAir aqi.OriginAirQuality
+	var newAir aqi.AirQuality
+	var apiError aqi.ApiError
 
 	err := json.Unmarshal(content, &originAir)
 	if err != nil {
@@ -167,7 +186,7 @@ func convertAir(content []byte) (AirQuality, error) {
 		return newAir, err
 
 	}
-	newAir = Copy2AirQuality(originAir)
+	newAir = aqi.Copy2AirQuality(originAir)
 
 	return newAir, nil
 
@@ -179,7 +198,7 @@ func AirOfIP(ctx context.Context, c *gin.Context) {
 	defer span.Finish()
 
 	ip := c.Param("ip")
-	if city, err := CityByIP(sctx, ip); err != nil {
+	if city, err := aqi.CityByIP(sctx, ip); err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 	} else {
 		if air, err := byCity(sctx, city); err != nil {

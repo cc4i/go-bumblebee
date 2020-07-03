@@ -14,6 +14,11 @@ import (
 	"os"
 )
 
+type ResponseAirQuality struct {
+	ServerVersion string         `json:"server_version"`
+	Air           OriginAirQuality `json:"air_quality"`
+}
+
 type OriginAirQuality struct {
 	IndexCityVHash string `json:"index_city_v_hash"`
 	IndexCity      string `json:"index_city"`
@@ -60,7 +65,7 @@ func AirOfCity(ctx context.Context, city string) (*model.AirQuality, error) {
 	defer span.Finish()
 
 	var air model.AirQuality
-	var o OriginAirQuality
+	var o ResponseAirQuality
 
 	endpoint := os.Getenv("AIR_SERVICE_ENDPOINT")
 	url := "http://" + endpoint + "/air/city/" + city
@@ -79,27 +84,27 @@ func AirOfCity(ctx context.Context, city string) (*model.AirQuality, error) {
 	}
 	// copy data from origin
 	air = model.AirQuality{
-		IndexCityVHash: o.IndexCityVHash,
-		IndexCity:      o.IndexCity,
-		StationIndex:   o.StationIndex,
-		Aqi:            o.AQI,
-		City:           o.City,
-		CityCn:         o.CityCN,
-		Latitude:       o.Latitude,
-		Longitude:      o.Longitude,
-		Co:             o.Co,
-		H:              o.H,
-		No2:            o.No2,
-		O3:             o.O3,
-		P:              o.P,
-		Pm10:           o.Pm10,
-		Pm25:           o.Pm25,
-		So2:            o.So2,
-		T:              o.T,
-		W:              o.W,
-		S:              o.S,
-		Tz:             o.Tz,
-		V:              o.V,
+		IndexCityVHash: o.Air.IndexCityVHash,
+		IndexCity:      o.Air.IndexCity,
+		StationIndex:   o.Air.StationIndex,
+		Aqi:            o.Air.AQI,
+		City:           o.Air.City,
+		CityCn:         o.Air.CityCN,
+		Latitude:       o.Air.Latitude,
+		Longitude:      o.Air.Longitude,
+		Co:             o.Air.Co,
+		H:              o.Air.H,
+		No2:            o.Air.No2,
+		O3:             o.Air.O3,
+		P:              o.Air.P,
+		Pm10:           o.Air.Pm10,
+		Pm25:           o.Air.Pm25,
+		So2:            o.Air.So2,
+		T:              o.Air.T,
+		W:              o.Air.W,
+		S:              o.Air.S,
+		Tz:             o.Air.Tz,
+		V:              o.Air.V,
 	}
 
 	return &air, nil

@@ -1,4 +1,4 @@
-package aqi
+package v2
 
 import (
 	"database/sql"
@@ -18,6 +18,6 @@ func sample() {
 	}
 }
 
-func LogCall(){
+func LogCall() {
 
 }

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"air/aqi"
+	"air/apis"
 	"context"
 	"fmt"
 	opentracing "github.com/opentracing/opentracing-go"
@@ -36,7 +36,7 @@ func main() {
 	span := tracer.StartSpan("http")
 	span.SetTag("air", "http-9011")
 	ctx := opentracing.ContextWithSpan(context.Background(), span)
-	log.Fatal(aqi.Router(ctx).Run("0.0.0.0:9011"))
+	log.Fatal(apis.Router(ctx).Run("0.0.0.0:9011"))
 	defer span.Finish()
 
 }
