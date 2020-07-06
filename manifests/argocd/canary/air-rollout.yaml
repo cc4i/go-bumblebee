@@ -1,0 +1,78 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout 
+metadata:
+  name: air
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: air 
+  template:
+    metadata:
+      labels: 
+        app: air 
+    spec:
+      terminationGracePeriodSeconds: 5
+      containers:
+      - name: air-go-bumblebee
+        image:  530820415924.dkr.ecr.us-west-2.amazonaws.com/herochinese/go-bumblebee-air:new-combo-jazz
+        env:
+          - name: AQI_SERVER_URL
+            valueFrom: 
+              secretKeyRef:
+                name: airsecret
+                key: aqiUrl
+          - name: AQI_SERVER_TOKEN
+            valueFrom: 
+              secretKeyRef:
+                name: airsecret
+                key: aqiToken
+          - name: IP_STACK_SERVER_URL
+            valueFrom: 
+              secretKeyRef:
+                name: airsecret
+                key: ipstackUrl
+          - name: IP_STACK_SERVER_TOKEN
+            valueFrom: 
+              secretKeyRef:
+                name: airsecret
+                key: ipstackToken
+          - name: REDIS_SERVER_ADDRESS
+            value: redis-cart:6379
+          - name: OVERRIDE_VERSION
+            value: v0.1.2-canary
+        ports:
+          - name: http
+            containerPort: 9011
+        resources:
+          requests: 
+            cpu: 100m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi
+  strategy:
+    canary:
+      steps:
+      - setWeight: 20
+      - pause: {}
+      - setWeight: 40
+      - pause: {duration: 10}
+      - setWeight: 60
+      - pause: {duration: 10}
+      - setWeight: 80
+      - pause: {duration: 10}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: air
+spec: 
+  type: ClusterIP
+  selector:
+    app: air
+  ports:
+  - name: http
+    port: 9011
+    targetPort: 9011

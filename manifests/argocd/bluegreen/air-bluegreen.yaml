@@ -1,10 +1,9 @@
 apiVersion: argoproj.io/v1alpha1
-kind: Deployment 
+kind: Rollout 
 metadata:
   name: air
 spec:
   replicas: 3
-  revisionHistoryLimit: 2
   selector:
     matchLabels:
       app: air 
@@ -17,6 +16,29 @@ spec:
       containers:
       - name: air-go-bumblebee
         image:  herochinese/go-bumblebee-air:new-combo-jazz
+        env:
+          - name: AQI_SERVER_URL
+            valueFrom: 
+              secretKeyRef:
+                name: airsecret
+                key: aqiUrl
+          - name: AQI_SERVER_TOKEN
+            valueFrom: 
+              secretKeyRef:
+                name: airsecret
+                key: aqiToken
+          - name: IP_STACK_SERVER_URL
+            valueFrom: 
+              secretKeyRef:
+                name: airsecret
+                key: ipstackUrl
+          - name: IP_STACK_SERVER_TOKEN
+            valueFrom: 
+              secretKeyRef:
+                name: airsecret
+                key: ipstackToken
+          - name: REDIS_SERVER_ADDRESS
+            value: redis-cart:6379
         ports:
           - name: http
             containerPort: 9011
