@@ -1,16 +1,16 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout 
 metadata:
-  name: air
+  name: air-bluegreen
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: air 
+      app: air-bluegreen 
   template:
     metadata:
       labels: 
-        app: air 
+        app: air-bluegreen 
     spec:
       terminationGracePeriodSeconds: 5
       containers:
@@ -51,32 +51,32 @@ spec:
             memory: 128Mi
   strategy:
     blueGreen:
-      activeService: rollout-bluegreen-active
-      previewService: rollout-bluegreen-preview
+      activeService: air-bluegreen-active
+      previewService: air-bluegreen-preview
       autoPromotionEnabled: false
 
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  name: rollout-bluegreen-active
+  name: air-bluegreen-active
 spec:
   selector:
-    app: rollout-bluegreen
+    app: air-bluegreen
   ports:
   - protocol: TCP
-    port: 80
-    targetPort: 8080
+    port: 9011
+    targetPort: 9011
 
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  name: rollout-bluegreen-preview
+  name: air-bluegreen-preview
 spec:
   selector:
-    app: rollout-bluegreen
+    app: air-bluegreen
   ports:
   - protocol: TCP
-    port: 80
-    targetPort: 8080
+    port: 9011
+    targetPort: 9011

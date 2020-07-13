@@ -160,7 +160,7 @@ func routeV2(ctx context.Context, r *gin.Engine) {
 			{ 
 				"version": "v2",
 				{
-					"Standard": "Air Quality Index scale as defined by the US-EPA 2016 standard.",
+					"Standard": "Air Quality Index scale as defined by the US-EPA 2016 standard.DEMO HAHA!!!",
 					"Definitions": [
 						{
 							"AQIServer": "0-50",
