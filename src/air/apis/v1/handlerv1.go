@@ -11,6 +11,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -26,8 +27,8 @@ type ResponseAirQuality struct {
 }
 
 func headers(c *gin.Context) {
-	ver := os.Getenv("OVERRIDE_VERSION")
-	if ver == "" {
+	ver := os.Getenv("AIR_VERSION")
+	if ver == "" || !strings.HasPrefix(ver, "v1") {
 		ver = "v1"
 	}
 	c.Header("air_server", "air")
@@ -146,14 +147,15 @@ func AirOfCity(ctx context.Context, c *gin.Context) {
 				log.Errorf("Caching air quality data was failed. -> %s, %s\n", air.City, err)
 			}
 			log.Infof("Air Quality of %s was cached.\n ", city)
-			if os.Getenv("AIR_VERSION")=="" {
+			ver := os.Getenv("AIR_VERSION")
+			if ver=="" || !strings.HasPrefix(ver, "v1") {
 				c.JSON(http.StatusOK, ResponseAirQuality{
-					ServerVersion: "v2",
+					ServerVersion: "v1",
 					Air:           air,
 				})
 			} else {
 				c.JSON(http.StatusOK, ResponseAirQuality{
-					ServerVersion: os.Getenv("AIR_VERSION"),
+					ServerVersion: ver,
 					Air:           air,
 				})
 			}
